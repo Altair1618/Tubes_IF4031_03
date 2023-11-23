@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  ticket_service:
+    container_name: ticket_service
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3069:3069
+    volumes:
+      - .:/go/src/app
+  ticket_service_db:
+    container_name: ticket_service_db 
+    image: mongo:6-jammy
+    ports:
+      - '27027:27017'
+    volumes:
+      - ./db:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
