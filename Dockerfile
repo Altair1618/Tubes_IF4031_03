@@ -11,8 +11,8 @@ RUN curl -fLo install.sh https://raw.githubusercontent.com/cosmtrek/air/master/i
 
 COPY . .
 RUN go mod tidy \
-    && go mod verify
-
+    && go mod verify \
+    && go env -w GOFLAGS="-buildvcs=false"
 
 EXPOSE 3069
 

@@ -1,14 +1,16 @@
 package main
 
 import (
+	"github.com/Altair1618/IF4031_03_Payment/payment_service.git/app/configs"
+	"github.com/Altair1618/IF4031_03_Payment/payment_service.git/app/routes"
+	"github.com/Altair1618/IF4031_03_Payment/payment_service.git/app/utils"
 	"github.com/gofiber/fiber/v2"
-	"log"
 )
 
 func main() {
 	app := fiber.New()
-	app.Get("/hello", func(c *fiber.Ctx) error {
-		return c.SendString("Hello World")
-	})
-	log.Fatal(app.Listen(":3069"))
+
+	configs.Bootstrap()
+	routes.Routes(app)
+	utils.Serve(app)
 }
