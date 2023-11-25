@@ -6,6 +6,8 @@ declare namespace Lucia {
 		email: string;
 		name: string;
 		picture: string;
+		createdAt?: string;
+		updatedAt?: string;
 	};
 	type DatabaseSessionAttributes = {};
 }
