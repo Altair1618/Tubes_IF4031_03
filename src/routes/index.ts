@@ -9,7 +9,7 @@ const Routes = (app: Elysia) => {
 			cors({
 				origin: [/http:\/\/localhost:[0-9]{4}$/],
 				credentials: true,
-				methods: ["GET", "PUT", "POST", "DELETE"],
+				methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
 				allowedHeaders: ["Content-Type", "Authorization"],
 			}),
 		)

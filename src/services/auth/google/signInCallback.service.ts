@@ -1,12 +1,12 @@
 import { OAuthRequestError } from "@lucia-auth/oauth";
 import { auth, googleAuth } from "../../../configs/lucia";
-import { GoogleSignInServiceCallbackPayload } from "../../../types/auth";
 import { ServiceResponse } from "../../../types/common";
 import jwt from "jsonwebtoken";
+import { GoogleSignInCallbackServicePayload } from "../../../types/auth";
 
 const googleSignInCallbackService = async ({
 	context,
-}: GoogleSignInServiceCallbackPayload): Promise<ServiceResponse> => {
+}: GoogleSignInCallbackServicePayload): Promise<ServiceResponse> => {
 	const storedState = context.cookie.google_outh_state.value;
 	const state = context.query.state;
 	const code = context.query.code;
