@@ -1,6 +1,6 @@
-import Elysia, { Context, PreContext } from "elysia";
-import { httpResponse } from "../utils/httpResponse";
+import Elysia from "elysia";
 import jwt from "jsonwebtoken";
+import { auth } from "../configs/lucia";
 
 const parseJWTMiddleware = new Elysia({ name: "authMiddleware" }).derive(
 	async ({ request: { headers } }) => {
@@ -37,11 +37,17 @@ const parseJWTMiddleware = new Elysia({ name: "authMiddleware" }).derive(
 		}
 
 		try {
-			const decodedToken = jwt.verify(token, process.env.RSA_PUBLIC_KEY ?? "");
+			const decodedToken = jwt.verify(
+				token,
+				process.env.RSA_PUBLIC_KEY ?? "",
+			) as jwt.JwtPayload;
+
+			await auth.validateSession(decodedToken.sessionId);
+
 			return {
 				auth: {
 					success: true,
-					data: { ...(decodedToken as jwt.JwtPayload) },
+					data: { ...decodedToken },
 				},
 			};
 		} catch (e) {

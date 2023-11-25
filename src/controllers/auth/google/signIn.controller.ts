@@ -1,8 +1,6 @@
 import Elysia, { Context } from "elysia";
 import googleSignInService from "../../../services/auth/google/signIn.service";
 import { httpResponse } from "../../../utils/httpResponse";
-import parseJWTMiddleware from "../../../middlewares/parseJWTMiddleware";
-import authMiddleware from "../../../middlewares/authMiddleware";
 
 const googleSignInController = new Elysia().get(
 	"/google",
