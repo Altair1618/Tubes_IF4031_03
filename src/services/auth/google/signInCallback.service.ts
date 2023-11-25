@@ -33,6 +33,8 @@ const googleSignInCallbackService = async ({
 			const user = await createUser({
 				attributes: {
 					email: googleUser.email as string,
+					name: googleUser.name,
+					picture: googleUser.picture,
 				},
 			});
 			return user;
@@ -49,7 +51,7 @@ const googleSignInCallbackService = async ({
 		const accessToken = jwt.sign(
 			{
 				userId: user.userId,
-				email: user.email,
+				sessionId: session.sessionId,
 			},
 			process.env.RSA_PRIVATE_KEY ?? "",
 			{ algorithm: "RS256" },
