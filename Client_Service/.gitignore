@@ -45,3 +45,6 @@ package-lock.json
 # DB Volumes
 /db
 /drizzle
+
+# bun
+bun.lockb
