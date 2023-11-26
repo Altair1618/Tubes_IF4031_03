@@ -1,0 +1,28 @@
+{
+  "name": "IF4031_03_ClientService",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^0.7.2",
+    "@elysiajs/jwt": "^0.7.0",
+    "@lucia-auth/adapter-postgresql": "^2.0.2",
+    "@lucia-auth/oauth": "^3.5.0",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.0",
+    "elysia": "latest",
+    "jsonwebtoken": "^9.0.2",
+    "lucia": "^2.7.4",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/pg": "^8.10.9",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.20.4"
+  },
+  "module": "src/index.js"
+}
