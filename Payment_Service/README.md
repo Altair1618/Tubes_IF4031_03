@@ -1,5 +1,3 @@
-# Tessera Ticket Service 🚀
-
 ## development
 To start the development server run:
 ```bash

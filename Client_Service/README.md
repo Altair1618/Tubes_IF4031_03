@@ -1,15 +1,17 @@
-# Elysia with Bun runtime
-
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
+## Development
+To start the development server run:  
 ```bash
-bun create elysia ./elysia-example
+docker compose up -d
 ```
 
-## Development
-To start the development server run:
+Make sure to push the schema to db:  
 ```bash
-bun run dev
+bunx drizzle-kit push:pg
+```
+
+To see db with drizzle studio:
+```bash
+bunx drizzle-kit studio
 ```
 
 Open http://localhost:3000/ with your browser to see the result.
