@@ -1,8 +1,8 @@
 package routes
 
 import (
-	paymentController "github.com/Altair1618/IF4031_03_Payment/payment_service.git/app/controllers/payment"
-	"github.com/Altair1618/IF4031_03_Payment/payment_service.git/app/middlewares"
+	paymentController "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/controllers/payment"
+	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/middlewares"
 	"github.com/gofiber/fiber/v2"
 )
 

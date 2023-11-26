@@ -1,4 +1,4 @@
-module github.com/Altair1618/IF4031_03_Payment/payment_service.git
+module github.com/Altair1618/Tubes_IF4031_03/Payment_Service
 
 go 1.21.4
 
