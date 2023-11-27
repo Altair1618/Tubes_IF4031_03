@@ -13,13 +13,13 @@ const (
 type CreateTicketServicePayload struct {
 	Price   int       `json:"price" form:"price" validate:"required"`
 	EventId uuid.UUID `json:"eventId" form:"eventId" validate:"required"`
-	SeatId  string    `json:"seatId" form:"seatId" validate:"required"`
+	SeatId  string    `json:"seatId" form:"seatId" validate:"required,is_seat_number"`
 }
 
 type UpdateTicketServicePayload struct {
 	Price   int          `json:"price" form:"price"`
 	EventId uuid.UUID    `json:"eventId" form:"eventId"`
-	SeatId  string       `json:"seatId" form:"seatId"`
+	SeatId  string       `json:"seatId" form:"seatId" validate:"is_seat_number"`
 	Status  TicketStatus `json:"status" form:"status"`
 }
 
