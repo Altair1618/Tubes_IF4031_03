@@ -1,8 +1,6 @@
 package ticketService
 
 import (
-	"fmt"
-
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
@@ -11,29 +9,45 @@ import (
 	"gorm.io/gorm"
 )
 
-func UpdateStatusService(payload commonStructs.UpdateStatusServicePayload) utils.ResponseBody {
+func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload) utils.ResponseBody {
+
 	db, _ := configs.GetGormClient()
 
-	var ticketInvoiceBookings []models.TicketInvoiceBooking
-	// var tickets []models.Ticket
+	var ticketInvoiceBooking models.TicketInvoiceBooking
+
+	// Change all ticket status to booked
+	db.Where("invoice_id = ?", payload.InvoiceId).First(&ticketInvoiceBooking)
+
+	var ticket models.Ticket
+	db.Where("id = ?", ticketInvoiceBooking.TicketId).First(&ticket)
+
+	if payload.Status == "FAILED" {
+		utils.GeneratePDF(false, ticketInvoiceBooking.BookingId.String(), commonStructs.FailedPDFPayload{
+			ErrorMessage: "Payment process failed",
+		})
+
+		return utils.ResponseBody{
+			Code:    fiber.StatusInternalServerError,
+			Message: "Failed to update ticket status",
+		}
+	}
 
 	db.Transaction(func(tx *gorm.DB) error {
-		// Change all ticket status to booked
-		db.Where("invoice_id = ?", payload.InvoiceId).Find(&ticketInvoiceBookings)
-		for _, ticketInvoiceBooking := range ticketInvoiceBookings {
-			fmt.Println(ticketInvoiceBooking.InvoiceId)
-		}
-		// var ticket models.Ticket
-		db.Where("")
-		// tickets = append(tickets)
+		ticket.Status = "BOOKED"
+		tx.Save(&ticket)
+
+		// Generate PDF
+		utils.GeneratePDF(true, ticketInvoiceBooking.BookingId.String(), commonStructs.SuccessPDFPayload{
+			Price: ticket.Price,
+			Seat:  ticket.SeatId,
+		})
+
+		// TODO: Sent pdf to client service
 		return nil
 	})
 
 	return utils.ResponseBody{
 		Code:    200,
 		Message: "Ticket status successfully updated",
-		Data: fiber.Map{
-			"ticketInvoiceBookings": ticketInvoiceBookings,
-		},
 	}
 }

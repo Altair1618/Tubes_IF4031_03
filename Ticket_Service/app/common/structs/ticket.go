@@ -10,6 +10,17 @@ const (
 	Booked  TicketStatus = "BOOKED"
 )
 
+type UpdateTicketStatusRequest struct {
+	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"required"`
+	Status    PaymentStatus `json:"status" form:"status" validate:"required,is_payment_status"`
+}
+
+type UpdateTicketStatusServicePayload struct {
+	InvoiceId string
+	Status    PaymentStatus
+	UserId    string
+}
+
 type CreateTicketServicePayload struct {
 	Price   int       `json:"price" form:"price" validate:"required,is_price"`
 	EventId uuid.UUID `json:"eventId" form:"eventId" validate:"required"`
