@@ -9,9 +9,10 @@ import (
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
-func CreateTicketService(payload commonStructs.CreateTicketServicePayload) utils.ResponseBody {
+func UpdateTicketService(id uuid.UUID, payload commonStructs.UpdateTicketServicePayload) utils.ResponseBody {
 	validator := utils.CustomValidator{
 		Validator: validator.New(),
 	}
@@ -23,35 +24,43 @@ func CreateTicketService(payload commonStructs.CreateTicketServicePayload) utils
 		}
 	}
 
-	if payload.SeatId == "" {
-		return utils.ResponseBody{
-			Code:    fiber.StatusBadRequest,
-			Message: "Seat Id is required",
-		}
-	}
-
 	ticket := models.Ticket{
-		Price:   payload.Price,
-		EventId: payload.EventId,
+		Id:        id,
+		Price:    payload.Price,
+		EventId:  payload.EventId,
 		SeatId:  payload.SeatId,
+		Status:  payload.Status,
 	}
 
 	db, _ := configs.GetGormClient()
 
-	result := db.Create(&ticket)
+	result := db.Model(&ticket).Updates(models.Ticket{
+		Price:    payload.Price,
+		EventId:  payload.EventId,
+		SeatId:  payload.SeatId,
+		Status:  payload.Status,
+	})
+
+	if result.RowsAffected == 0 {
+		return utils.ResponseBody{
+			Code:    404,
+			Message: "Ticket Not Found",
+			Data:    nil,
+		}
+	}
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
 		return utils.ResponseBody{
 			Code:    500,
-			Message: "Error While Inserting Data To Database",
+			Message: "Error While Updating Data To Database",
 			Data:    nil,
 		}
 	} else {
 		return utils.ResponseBody{
 			Code:    200,
-			Message: "Ticket Data Inserted Successfully",
+			Message: "Ticket Data Updated Successfully",
 			Data:    nil,
 		}
 	}
