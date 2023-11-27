@@ -19,6 +19,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	RegisterValidation(cv, "is_division", DivisionValidation)
 	RegisterValidation(cv, "is_category", CategoryValidation)
 	RegisterValidation(cv, "is_sort", SortValidation)
+	RegisterValidation(cv, "is_seat_number", SeatNumberValidation)
 
 	if err := cv.Validator.Struct(i); err != nil {
 		return err
@@ -53,6 +54,8 @@ func GetValidationErrorMessages(err error) []FieldError {
 				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid ISO 8601 date", err.Value())})
 			case "is_sort":
 				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a a valid sort", err.Value())})
+			case "is_seat_number":
+				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid seat number", err.Value())})
 			}
 		}
 	}
@@ -126,4 +129,12 @@ func SortValidation(fl validator.FieldLevel) bool {
 	}
 
 	return value == "ASC" || value == "DESC"
+}
+
+func SeatNumberValidation(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+
+	regex, _ := regexp.Compile(`^[A-Z]{2}[0-9]{3}$`)
+
+	return regex.MatchString(value)
 }

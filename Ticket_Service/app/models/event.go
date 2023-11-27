@@ -6,8 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// test
-
 type Event struct {
 	Id        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey;column=id"`
 	EventName string    `gorm:"not null;column=event_name"`
