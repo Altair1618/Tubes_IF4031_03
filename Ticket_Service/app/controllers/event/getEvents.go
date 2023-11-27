@@ -12,7 +12,7 @@ func GetEventsController(c *fiber.Ctx) error {
 
 	if err := c.QueryParser(payload); err != nil {
 		return utils.CreateResponseBody(c, utils.ResponseBody{
-			Code: fiber.StatusBadRequest,
+			Code:    fiber.StatusBadRequest,
 			Message: err.Error(),
 		})
 	}

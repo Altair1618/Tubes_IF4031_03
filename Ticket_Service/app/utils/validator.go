@@ -42,7 +42,7 @@ func GetValidationErrorMessages(err error) []FieldError {
 		for _, err := range castedObject {
 			switch err.Tag() {
 			case "required":
-				errMessages = append(errMessages, FieldError{})
+				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s is required", err.Field())})
 			case "max":
 				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s maximum %s", err.Field(), err.Param())})
 			case "min":

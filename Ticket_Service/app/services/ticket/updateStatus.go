@@ -15,7 +15,7 @@ func UpdateStatusService(payload commonStructs.UpdateStatusServicePayload) utils
 	db, _ := configs.GetGormClient()
 
 	var ticketInvoiceBookings []models.TicketInvoiceBooking
-	var tickets []models.Ticket
+	// var tickets []models.Ticket
 
 	db.Transaction(func(tx *gorm.DB) error {
 		// Change all ticket status to booked
@@ -23,9 +23,9 @@ func UpdateStatusService(payload commonStructs.UpdateStatusServicePayload) utils
 		for _, ticketInvoiceBooking := range ticketInvoiceBookings {
 			fmt.Println(ticketInvoiceBooking.InvoiceId)
 		}
-		var ticket models.Ticket
+		// var ticket models.Ticket
 		db.Where("")
-		tickets = append(tickets)
+		// tickets = append(tickets)
 		return nil
 	})
 
