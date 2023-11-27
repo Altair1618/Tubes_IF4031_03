@@ -1,7 +1,7 @@
 import { db } from "../../configs/drizzle";
 import { ServiceResponse } from "../../types/common";
 import { GetBookingsServicePayload } from "../../dto/booking/getBookings.dto";
-import { TicketPriceAndEventName, BookingGroup } from "../../types/booking";
+import { TicketPriceAndEvent, BookingGroup} from "../../types/booking";
 import { sql } from 'drizzle-orm' 
 import { TicketServiceResponse } from "../../types/common";
 
@@ -23,10 +23,16 @@ const getBookingsService = async ({
 			FROM "booking_history"
 			WHERE "user_id" = ${userId}
 			ORDER BY "group_id" ASC
+			OFFSET ${parseInt(page)}
 			LIMIT ${MAX_GROUP_PER_PAGE}
+		),
+
+		total_group as (
+			SELECT COUNT(DISTINCT "group_id") as count
+			from "booking_history"
 		)
-		
-		SELECT "ticket_id", "status", "group_id", "report", "created_at"
+
+		SELECT "ticket_id", "status", "group_id", "report", "created_at", total_group.count as total_page
 		FROM "booking_history"
 		WHERE "user_id" = ${userId} AND "group_id" IN (SELECT "group_id" FROM distinct_groups)
 		ORDER BY "group_id" ASC;
@@ -51,7 +57,7 @@ const getBookingsService = async ({
 		credentials: 'include'
 	});
 
-	const responseData = await response.json() as TicketServiceResponse<TicketPriceAndEventName>;
+	const responseData = await response.json() as TicketServiceResponse<TicketPriceAndEvent>;
 
 	const tiketPricesAndEventNames = responseData.data
 	const bookingGroups: BookingGroup[] = []
@@ -72,6 +78,7 @@ const getBookingsService = async ({
 			const totalPrice = tiketPricesAndEventNames[ticketId].price
 			const overallStatus = status
 			const paymentUrl = elmt['report'] as string | null
+			const totalPage = elmt['total_page'] as number
 
 			const bookingGroup: BookingGroup = {
 				groupId,
@@ -79,7 +86,8 @@ const getBookingsService = async ({
 				eventName,
 				totalPrice,
 				overallStatus,
-				paymentUrl
+				paymentUrl,
+				totalPage
 			}
 
 			bookingGroups.push(bookingGroup)

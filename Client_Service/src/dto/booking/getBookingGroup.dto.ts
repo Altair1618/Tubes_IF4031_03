@@ -11,6 +11,15 @@ export const getBookingGroupSchema = z.object({
 		.min(1, {
 			message: "User ID is required",
 		}),
+	jwt: z
+		.string({
+			required_error: "JWT Token is required",
+			invalid_type_error: "JWT Token is not in a valid type"
+		})
+		.trim()
+		.min(1, {
+			message: "JWT Token is required",
+		}),
     groupId: z
         .string({
             required_error: "Group ID is required",

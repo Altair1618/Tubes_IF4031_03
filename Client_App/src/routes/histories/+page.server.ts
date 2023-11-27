@@ -11,7 +11,8 @@ interface History {
 	eventName: string,
 	totalPrice: number,
 	overallStatus: string,
-	paymentUrl: string
+	paymentUrl: string,
+	totalPage: number
 }
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
