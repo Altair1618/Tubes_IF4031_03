@@ -9,4 +9,5 @@ func ticketRouteV1(v1 fiber.Router) {
 	ticket := v1.Group("/ticket")
 
 	ticket.Get("/", ticketController.GetTicketController)
+	ticket.Patch("/", ticketController.UpdateStatusController)
 }
