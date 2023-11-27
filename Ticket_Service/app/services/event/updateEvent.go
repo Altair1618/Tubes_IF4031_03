@@ -7,7 +7,6 @@ import (
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
-	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
@@ -41,7 +40,7 @@ func UpdateEventService(id uuid.UUID, payload commonStructs.UpdateEventServicePa
 		return utils.ResponseBody{
 			Code:    200,
 			Message: "Event Data Updated Successfully",
-			Data:    fiber.Map{"event": event},
+			Data:    nil,
 		}
 	}
 }

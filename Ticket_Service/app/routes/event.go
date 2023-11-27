@@ -12,4 +12,5 @@ func eventRouteV1(v1 fiber.Router) {
 	event.Get("/:id", eventController.GetEventByIdController)
 	event.Post("/", eventController.CreateEventController)
 	event.Put("/:id", eventController.UpdateEventController)
+	event.Delete("/:id", eventController.DeleteEventController)
 }
