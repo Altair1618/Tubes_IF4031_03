@@ -3,8 +3,8 @@ package ticketController
 import (
 	"time"
 
-	"github.com/Altair1618/IF4031_03_Ticket/app/configs"
-	"github.com/Altair1618/IF4031_03_Ticket/app/models"
+	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
+	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/gofiber/fiber/v2"
 )
 

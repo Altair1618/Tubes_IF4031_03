@@ -1,7 +1,7 @@
 package routes
 
 import (
-	ticketController "github.com/Altair1618/IF4031_03_Ticket/app/controllers/ticket"
+	ticketController "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/controllers/ticket"
 	"github.com/gofiber/fiber/v2"
 )
 

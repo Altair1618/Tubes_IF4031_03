@@ -2,7 +2,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { DotsVertical } from 'radix-icons-svelte';
 	import Button from './ui/button/button.svelte';
-	import { IconLogin2, IconLogout2, IconUser } from '@tabler/icons-svelte';
+	import { IconLogin2, IconUser, IconHistory } from '@tabler/icons-svelte';
 	import type { User } from '$lib/types/common';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
@@ -27,6 +27,12 @@
 							<a href={`/profile/${user.userId}`} class="flex items-center gap-2">
 								<IconUser size={18} />
 								Profile
+							</a>
+						</DropdownMenu.Item>
+						<DropdownMenu.Item>
+							<a href={`/histories`} class="flex items-center gap-2">
+								<IconHistory size={18} />
+								Histories
 							</a>
 						</DropdownMenu.Item>
 					{:else}
