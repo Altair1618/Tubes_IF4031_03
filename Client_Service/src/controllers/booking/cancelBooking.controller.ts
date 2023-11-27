@@ -1,13 +1,13 @@
 import Elysia from "elysia";
-import getBookingService from "../../services/booking/getBooking.service";
+import cancelBookingService from "../../services/booking/cancelBooking.service";
 import { httpResponse } from "../../utils/httpResponse";
 import authMiddleware from "../../middlewares/authMiddleware";
 import parseJWTMiddleware from "../../middlewares/parseJWTMiddleware";
 
-const getBookingGroupController = new Elysia().use(parseJWTMiddleware).get(
-	"/:id",
+const cancelBookingController = new Elysia().use(parseJWTMiddleware).patch(
+	"/:id/status/cancelled",
 	async ({ auth: { data }, params }) => {
-		const serviceResponse = await getBookingService({
+		const serviceResponse = await cancelBookingService({
 			userId: data?.userId,
 			bookingId: params.id,
 			jwt: data?.token as string
@@ -23,4 +23,4 @@ const getBookingGroupController = new Elysia().use(parseJWTMiddleware).get(
 		],
 	},
 );
-export default getBookingGroupController;
+export default cancelBookingController;

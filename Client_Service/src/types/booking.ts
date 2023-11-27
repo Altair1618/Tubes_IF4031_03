@@ -20,3 +20,7 @@ export interface BookingData {
 export interface BookingDataWithTotalPage extends BookingData {
 	totalPage: number
 }
+
+export interface CancelBookingData {
+	newStatus: string
+}
