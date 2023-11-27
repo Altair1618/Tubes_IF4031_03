@@ -1,13 +1,13 @@
-package eventController
+package ticketController
 
 import (
-	eventService "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/services/event"
+	ticketService "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/services/ticket"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
-func GetEventByIdController(c *fiber.Ctx) error {
+func GetTicketByIdController(c *fiber.Ctx) error {
 	id := c.Params("id")
 	uuid, err := uuid.Parse(id)
 
@@ -18,6 +18,6 @@ func GetEventByIdController(c *fiber.Ctx) error {
 		})
 	}
 
-	serviceResponse := eventService.GetEventByIdService(uuid)
+	serviceResponse := ticketService.GetTicketByIdService(uuid)
 	return utils.CreateResponseBody(c, serviceResponse)
 }

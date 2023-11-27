@@ -1,4 +1,4 @@
-package eventService
+package ticketService
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
+func GetTicketByIdService(id uuid.UUID) utils.ResponseBody {
 	db, _ := configs.GetGormClient()
 
-	var event models.Event
-	result := db.First(&event, "id = ?", id)
+	var ticket models.Ticket
+	result := db.First(&ticket, "id = ?", id)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
@@ -28,15 +28,15 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 		if result.RowsAffected == 0 {
 			return utils.ResponseBody{
 				Code:    404,
-				Message: "Event Not Found",
+				Message: "Ticket Not Found",
 				Data:    nil,
 			}
 		}
 		
 		return utils.ResponseBody{
 			Code:    200,
-			Message: "Event Data Fetched Successfully",
-			Data:    fiber.Map{"event": event},
+			Message: "Ticket Data Fetched Successfully",
+			Data:    fiber.Map{"ticket": ticket},
 		}
 	}
 }
