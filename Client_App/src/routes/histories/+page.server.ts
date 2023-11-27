@@ -6,7 +6,7 @@ import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { updateProfileSchema } from '$lib/dto/profile/updateProfile.dto';
 
 interface History {
-	groupId: string,
+	id: string,
 	date: string,
 	eventName: string,
 	totalPrice: number,

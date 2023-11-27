@@ -60,8 +60,6 @@ const getBookingsService = async ({
 		const status = elmt['status'] as string;
 		const paymentUrl = elmt['report'] as string | null;
 		const createdAt = elmt['created_at'] as string;
-		const eventName = tiketPricesAndEventNames[ticketId].eventName;
-		const price = tiketPricesAndEventNames[ticketId].price;
 		const totalPage = elmt['total_page'] as number;
 
 		bookings.push({
@@ -70,9 +68,8 @@ const getBookingsService = async ({
 			status,
 			paymentUrl,
 			createdAt,
-			eventName,
-			price,
-			totalPage
+			totalPage,
+			...tiketPricesAndEventNames[ticketId]
 		})
 	})
 

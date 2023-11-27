@@ -13,8 +13,10 @@ export interface BookingData {
 	status: string,
     paymentUrl: string | null,
 	createdAt: string,
-	eventName: string,
 	price: number,
+	eventName: string,
+	eventTime: string,
+	location: string
 }
 
 export interface BookingDataWithTotalPage extends BookingData {

@@ -34,10 +34,10 @@
                 </tr>
             </thead>
             <tbody>
-                {#each data.data ?? [] as history_group, idx}
+                {#each data.data ?? [] as history, idx}
                     <tr class={`${idx % 2 === 1 ? 'bg-gray-50' : ''} text-sm border-b-[1px] border-black align-top`}>
                         {idx}:
-                        <TableContent>{history_group.group_id}</TableContent>
+                        <TableContent>{history.go}</TableContent>
                         <TableContent>{history_group.date}</TableContent>
                         <TableContent>{history_group.event_name}</TableContent>
                         <TableContent>{history_group.total_price}</TableContent>
