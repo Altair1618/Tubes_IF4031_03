@@ -1,7 +1,7 @@
-package ticketStruct
+package commonStructs
 
 type UpdateStatusServicePayload struct {
-	TicketId string `json:"ticketId" form:"ticketId"`
-	Status   string `json:"status" form:"status"`
-	UserId   string `json:"userId" form:"userId"`
+	InvoiceId string        `json:"invoiceId" form:"invoiceId"`
+	Status    PaymentStatus `json:"status" form:"status"`
+	UserId    string        `json:"userId" form:"userId"`
 }

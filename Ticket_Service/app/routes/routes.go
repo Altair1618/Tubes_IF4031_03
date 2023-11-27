@@ -7,5 +7,6 @@ func Routes(app *fiber.App) {
 
 	// version 1 group
 	v1 := api.Group("/v1")
+	eventRouteV1(v1)
 	ticketRouteV1(v1)
 }
