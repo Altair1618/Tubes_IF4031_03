@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { user } from "../models/user";
+import { booking } from "../models/booking";
 
 export const pool = new Pool({
 	user: process.env.POSTGRES_USER ?? "",
@@ -12,4 +13,4 @@ export const pool = new Pool({
 	database: process.env.POSTGRES_DB ?? "tessera",
 });
 
-export const db = drizzle(pool, { schema: { user } });
+export const db = drizzle(pool, { schema: { user, booking } });

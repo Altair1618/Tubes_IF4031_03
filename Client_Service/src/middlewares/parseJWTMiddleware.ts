@@ -47,7 +47,7 @@ const parseJWTMiddleware = new Elysia({ name: "authMiddleware" }).derive(
 			return {
 				auth: {
 					success: true,
-					data: { ...decodedToken },
+					data: { ...decodedToken, token: token },
 				},
 			};
 		} catch (e) {
