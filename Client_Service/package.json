@@ -22,7 +22,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/pg": "^8.10.9",
     "bun-types": "latest",
-    "drizzle-kit": "^0.20.4"
+    "drizzle-kit": "latest"
   },
   "module": "src/index.js"
 }

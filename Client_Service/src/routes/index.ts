@@ -18,4 +18,4 @@ const Routes = (app: Elysia) => {
 		);
 };
 
-export default Routes;
+export default Routes;6
