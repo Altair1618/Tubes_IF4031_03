@@ -10,7 +10,7 @@ export enum BookingStatus {
 }
 
 export const bookingStatus = pgEnum(
-	"status", 
+	"booking_status", 
 	Object.values(BookingStatus) as [string]
 )
 
