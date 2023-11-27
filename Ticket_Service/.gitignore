@@ -2,3 +2,5 @@ db/
 tmp/
 .env
 .env.local
+public/invoices/*.pdf
+!out/.gitkeep

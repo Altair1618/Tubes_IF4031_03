@@ -1,7 +1,12 @@
 package commonStructs
 
-type UpdateStatusServicePayload struct {
-	InvoiceId string        `json:"invoiceId" form:"invoiceId"`
-	Status    PaymentStatus `json:"status" form:"status"`
-	UserId    string        `json:"userId" form:"userId"`
+type TicketUpdateStatusRequest struct {
+	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"required"`
+	Status    PaymentStatus `json:"status" form:"status" validate:"required,is_payment_status"`
+}
+
+type TicketUpdateStatusServicePayload struct {
+	InvoiceId string
+	Status    PaymentStatus
+	UserId    string
 }

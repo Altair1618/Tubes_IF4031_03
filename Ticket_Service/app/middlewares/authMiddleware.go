@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -61,11 +62,13 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return utils.CreateResponseBody(c, responseBody)
 	}
 
-	userData := make(map[string]string)
-	userData["username"] = claims["username"].(string)
-	userData["userId"] = claims["userId"].(string)
+	userData := commonStructs.JWTPayload{
+		UserId:    claims["userId"].(string),
+		SessionId: claims["sessionId"].(string),
+	}
 
 	c.Locals("userInfo", userData)
+	c.Locals("token", token)
 
 	return c.Next()
 }

@@ -19,6 +19,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	RegisterValidation(cv, "is_division", DivisionValidation)
 	RegisterValidation(cv, "is_category", CategoryValidation)
 	RegisterValidation(cv, "is_sort", SortValidation)
+	RegisterValidation(cv, "is_payment_status", PaymentStatusValidation)
 
 	if err := cv.Validator.Struct(i); err != nil {
 		return err
@@ -52,7 +53,9 @@ func GetValidationErrorMessages(err error) []FieldError {
 			case "is_date":
 				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid ISO 8601 date", err.Value())})
 			case "is_sort":
-				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a a valid sort", err.Value())})
+				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid sort", err.Value())})
+			case "is_payment_status":
+				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid payment status", err.Value())})
 			}
 		}
 	}
@@ -126,4 +129,14 @@ func SortValidation(fl validator.FieldLevel) bool {
 	}
 
 	return value == "ASC" || value == "DESC"
+}
+
+func PaymentStatusValidation(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+
+	if value == "" {
+		return true
+	}
+
+	return value == "FAILED" || value == "SUCCESS"
 }
