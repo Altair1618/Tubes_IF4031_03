@@ -11,8 +11,8 @@ type CreateEventServicePayload struct {
 }
 
 type GetEventsServicePayload struct {
-	Query string `json:"query" form:"query"`
-	Page  int    `json:"page" form:"page"`
+	Query string `query:"query"`
+	Page  int    `query:"page" validate:"required"`
 }
 
 type UpdateEventServicePayload struct {
