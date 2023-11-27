@@ -3,7 +3,7 @@ package configs
 import (
 	"log"
 
-	"github.com/Altair1618/IF4031_03_Ticket/app/models"
+	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/spf13/viper"
 )
 
@@ -16,5 +16,5 @@ func Bootstrap() {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&models.Ticket{})
+	db.AutoMigrate(&models.Ticket{}, &models.Event{})
 }
