@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Altair1618/IF4031_03_Ticket/app/utils"
+	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/viper"

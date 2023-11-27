@@ -1,6 +1,6 @@
 package ticketService
 
-import "github.com/Altair1618/IF4031_03_Ticket/app/utils"
+import "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 
 func UpdateStatusService() utils.ResponseBody {
 	return utils.ResponseBody{
