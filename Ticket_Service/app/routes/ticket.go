@@ -8,6 +8,9 @@ import (
 func ticketRouteV1(v1 fiber.Router) {
 	ticket := v1.Group("/ticket")
 
-	ticket.Get("/", ticketController.GetTicketController)
+	ticket.Get("/:id", ticketController.GetTicketByIdController)
+	ticket.Post("/", ticketController.CreateTicketController)
+	ticket.Put("/:id", ticketController.UpdateTicketController)
 	ticket.Patch("/", ticketController.UpdateStatusController)
+	ticket.Delete("/:id", ticketController.DeleteTicketController)
 }

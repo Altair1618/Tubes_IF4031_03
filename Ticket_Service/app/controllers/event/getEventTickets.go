@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetEventByIdController(c *fiber.Ctx) error {
+func GetEventTicketsController(c *fiber.Ctx) error {
 	id := c.Params("id")
 	uuid, err := uuid.Parse(id)
 
@@ -18,6 +18,6 @@ func GetEventByIdController(c *fiber.Ctx) error {
 		})
 	}
 
-	serviceResponse := eventService.GetEventByIdService(uuid)
+	serviceResponse := eventService.GetEventTicketsService(uuid)
 	return utils.CreateResponseBody(c, serviceResponse)
 }
