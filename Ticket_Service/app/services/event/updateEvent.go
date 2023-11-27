@@ -39,7 +39,15 @@ func UpdateEventService(id uuid.UUID, payload commonStructs.UpdateEventServicePa
 		Location:  payload.Location,
 	})
 
-	if result.Error != nil || result.RowsAffected == 0 {
+	if result.RowsAffected == 0 {
+		return utils.ResponseBody{
+			Code:    404,
+			Message: "Event Not Found",
+			Data:    nil,
+		}
+	}
+
+	if result.Error != nil {
 		fmt.Println(result.Error)
 
 		return utils.ResponseBody{

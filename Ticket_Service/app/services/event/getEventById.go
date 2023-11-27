@@ -16,6 +16,14 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 	var event models.Event
 	result := db.First(&event, "id = ?", id)
 
+	if result.RowsAffected == 0 {
+		return utils.ResponseBody{
+			Code:    404,
+			Message: "Event Not Found",
+			Data:    nil,
+		}
+	}
+
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
