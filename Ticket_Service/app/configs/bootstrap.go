@@ -16,5 +16,5 @@ func Bootstrap() {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&models.Ticket{})
+	db.AutoMigrate(&models.Ticket{}, &models.Event{})
 }
