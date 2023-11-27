@@ -12,4 +12,5 @@ func ticketRouteV1(v1 fiber.Router) {
 	ticket.Post("/", ticketController.CreateTicketController)
 	ticket.Put("/:id", ticketController.UpdateTicketController)
 	ticket.Patch("/", ticketController.UpdateStatusController)
+	ticket.Delete("/:id", ticketController.DeleteTicketController)
 }

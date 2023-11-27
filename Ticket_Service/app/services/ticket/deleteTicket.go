@@ -6,22 +6,24 @@ import (
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
-	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
-func GetTicketByIdService(id uuid.UUID) utils.ResponseBody {
+func DeleteTicketService(id uuid.UUID) utils.ResponseBody {
+	ticket := models.Ticket{
+		Id: id,
+	}
+
 	db, _ := configs.GetGormClient()
 
-	var ticket models.Ticket
-	result := db.First(&ticket, "id = ?", id)
+	result := db.Delete(&ticket)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
 		return utils.ResponseBody{
 			Code:    500,
-			Message: "Error While Fetching Data From Database",
+			Message: "Error While Deleting Data From Database",
 			Data:    nil,
 		}
 	} else {
@@ -35,8 +37,8 @@ func GetTicketByIdService(id uuid.UUID) utils.ResponseBody {
 		
 		return utils.ResponseBody{
 			Code:    200,
-			Message: "Ticket Data Fetched Successfully",
-			Data:    fiber.Map{"ticket": ticket},
+			Message: "Ticket Data Deleted Successfully",
+			Data:    nil,
 		}
 	}
 }

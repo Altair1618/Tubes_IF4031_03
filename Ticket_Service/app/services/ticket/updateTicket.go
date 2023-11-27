@@ -41,14 +41,6 @@ func UpdateTicketService(id uuid.UUID, payload commonStructs.UpdateTicketService
 		Status:  payload.Status,
 	})
 
-	if result.RowsAffected == 0 {
-		return utils.ResponseBody{
-			Code:    404,
-			Message: "Ticket Not Found",
-			Data:    nil,
-		}
-	}
-
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
@@ -58,6 +50,14 @@ func UpdateTicketService(id uuid.UUID, payload commonStructs.UpdateTicketService
 			Data:    nil,
 		}
 	} else {
+		if result.RowsAffected == 0 {
+			return utils.ResponseBody{
+				Code:    404,
+				Message: "Ticket Not Found",
+				Data:    nil,
+			}
+		}
+		
 		return utils.ResponseBody{
 			Code:    200,
 			Message: "Ticket Data Updated Successfully",

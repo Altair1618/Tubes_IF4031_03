@@ -18,14 +18,6 @@ func DeleteEventService(id uuid.UUID) utils.ResponseBody {
 
 	result := db.Delete(&event)
 
-	if result.RowsAffected == 0 {
-		return utils.ResponseBody{
-			Code:    404,
-			Message: "Event Not Found",
-			Data:    nil,
-		}
-	}
-
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
@@ -35,8 +27,14 @@ func DeleteEventService(id uuid.UUID) utils.ResponseBody {
 			Data:    nil,
 		}
 	} else {
-		// fmt.Println(event)
-
+		if result.RowsAffected == 0 {
+			return utils.ResponseBody{
+				Code:    404,
+				Message: "Event Not Found",
+				Data:    nil,
+			}
+		}
+	
 		return utils.ResponseBody{
 			Code:    200,
 			Message: "Event Data Deleted Successfully",
