@@ -7,16 +7,25 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateEventController(c *fiber.Ctx) error {
-	payload := new(commonStructs.DataEventServicePayload)
+func GetEventsController(c *fiber.Ctx) error {
+	payload := new(commonStructs.GetEventsServicePayload)
 
-	if err := c.BodyParser(payload); err != nil {
+	// payload.Query = c.Query("query")
+	// page, err := strconv.Atoi(c.Query("page"))
+
+	// if err != nil {
+	// 	page = 1
+	// }
+
+	// payload.Page = page
+
+	if err := c.QueryParser(payload); err != nil {
 		return utils.CreateResponseBody(c, utils.ResponseBody{
 			Code: fiber.StatusBadRequest,
 			Message: err.Error(),
 		})
 	}
 
-	serviceResponse := eventService.CreateEventService(*payload)
+	serviceResponse := eventService.GetEventsService(*payload)
 	return utils.CreateResponseBody(c, serviceResponse)
 }

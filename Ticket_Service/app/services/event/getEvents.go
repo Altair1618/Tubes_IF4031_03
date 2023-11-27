@@ -10,32 +10,31 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateEventService(payload commonStructs.DataEventServicePayload) utils.ResponseBody {
-	event := models.Event{
-		EventName: payload.EventName,
-		EventTime: payload.EventTime,
-		Location:  payload.Location,
-	}
+func GetEventsService(payload commonStructs.GetEventsServicePayload) utils.ResponseBody {
+	query := payload.Query
+	page := payload.Page
+
+	if page < 1 { page = 1 }
 
 	db, _ := configs.GetGormClient()
 
-	result := db.Create(&event)
+	var events []models.Event
+
+	result := db.Where("event_name LIKE ?", "%"+query+"%").Limit(10).Offset((page - 1) * 10).Find(&events)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
 		return utils.ResponseBody{
 			Code:    500,
-			Message: "Error While Inserting Data To Database",
+			Message: "Error While Fetching Data From Database",
 			Data:    nil,
 		}
 	} else {
-		// fmt.Println(event)
-
 		return utils.ResponseBody{
 			Code:    200,
-			Message: "Event Data Inserted Successfully",
-			Data:    fiber.Map{"event": event},
+			Message: "Events Data Fetched Successfully",
+			Data:    fiber.Map{"events": events},
 		}
 	}
 }

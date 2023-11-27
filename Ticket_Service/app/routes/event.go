@@ -8,5 +8,6 @@ import (
 func eventRouteV1(v1 fiber.Router) {
 	event := v1.Group("/event")
 
+	event.Get("/", eventController.GetEventsController)
 	event.Post("/", eventController.CreateEventController)
 }
