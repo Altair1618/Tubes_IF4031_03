@@ -1,4 +1,4 @@
-package ticketStruct
+package commonStructs
 
 type UpdateStatusServicePayload struct {
 	TicketId string `json:"ticketId" form:"ticketId"`
