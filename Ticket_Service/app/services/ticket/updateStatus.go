@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func UpdateStatusService(payload commonStructs.TicketUpdateStatusServicePayload) utils.ResponseBody {
+func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload) utils.ResponseBody {
 
 	db, _ := configs.GetGormClient()
 

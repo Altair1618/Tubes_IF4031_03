@@ -5,14 +5,15 @@ import type { ClientServiceResponse } from '$lib/types/common';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { updateProfileSchema } from '$lib/dto/profile/updateProfile.dto';
 
-type Histories = [{
-	group_id: string,
+interface History {
+	groupId: string,
 	date: string,
-	event_name: string,
-	total_price: Number,
-	overall_status: string,
-	payment_url: string
-}]
+	eventName: string,
+	totalPrice: number,
+	overallStatus: string,
+	paymentUrl: string,
+	totalPage: number
+}
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
 	return {
@@ -20,14 +21,14 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 		message: 'yes',
 		data: []
 	}
-	const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/histories`, {
+	const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings?user_id=${locals.user?.userId}`, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${cookies.get('mikuuuu')}`
 		},
 		credentials: 'include'
 	});
-	const responseData: ClientServiceResponse<Histories> = await response.json();
+	const responseData: ClientServiceResponse<History[]> = await response.json();
 
 	if (!response.ok) {
 		throw error(response.status, responseData.message);

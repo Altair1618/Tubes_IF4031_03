@@ -10,7 +10,7 @@ import (
 
 func UpdateStatusController(c *fiber.Ctx) error {
 
-	payload := new(commonStructs.TicketUpdateStatusRequest)
+	payload := new(commonStructs.UpdateTicketStatusRequest)
 
 	if err := c.BodyParser(payload); err != nil {
 		return utils.CreateResponseBody(c, utils.ResponseBody{
@@ -29,7 +29,7 @@ func UpdateStatusController(c *fiber.Ctx) error {
 		})
 	}
 
-	serviceResponse := ticketService.UpdateStatusService(commonStructs.TicketUpdateStatusServicePayload{
+	serviceResponse := ticketService.UpdateStatusService(commonStructs.UpdateTicketStatusServicePayload{
 		InvoiceId: payload.InvoiceId,
 		Status:    payload.Status,
 		UserId:    c.Locals("userInfo").(commonStructs.JWTPayload).UserId,

@@ -2,6 +2,10 @@ import Elysia from "elysia";
 import jwt from "jsonwebtoken";
 import { auth } from "../configs/lucia";
 
+interface CustomJwtPayload extends jwt.JwtPayload {
+	token: string
+}
+
 const parseJWTMiddleware = new Elysia({ name: "authMiddleware" }).derive(
 	async ({ request: { headers } }) => {
 		const authorizationHeader = headers.get("Authorization");
@@ -47,7 +51,7 @@ const parseJWTMiddleware = new Elysia({ name: "authMiddleware" }).derive(
 			return {
 				auth: {
 					success: true,
-					data: { ...decodedToken, token: token },
+					data: { token: token, ...decodedToken } as CustomJwtPayload,
 				},
 			};
 		} catch (e) {

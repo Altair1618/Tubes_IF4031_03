@@ -14,20 +14,22 @@
 	<div class="grid border border-gray-200 rounded-sm w-fit md:w-full">
         <table class="text-left w-[710px] md:w-full">
             <colgroup>
+                <col span="1" class="w-[15%]"/>
                 <col span="1" class="w-[20%]"/>
                 <col span="1" class="w-[20%]"/>
                 <col span="1" class="w-[20%]"/>
                 <col span="1" class="w-[10%]"/>
-                <col span="1" class="w-[20%]"/>
                 <col span="1" class="w-[10%]"/>
+                <col span="1" class="w-[5%]"/>
             </colgroup>
             <thead>
                 <tr class="align-top">
-                    <TableContent isHeader>Booking Group</TableContent>
+                    <TableContent isHeader>ID</TableContent>
                     <TableContent isHeader>Date</TableContent>
                     <TableContent isHeader>Event Name</TableContent>
+                    <TableContent isHeader>Event Time & Location</TableContent>
                     <TableContent isHeader>Amount</TableContent>
-                    <TableContent isHeader>Overall Status</TableContent>
+                    <TableContent isHeader>Status</TableContent>
                     <TableContent isHeader>Action</TableContent>
                 </tr>
             </thead>

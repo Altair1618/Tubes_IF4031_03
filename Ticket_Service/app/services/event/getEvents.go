@@ -12,7 +12,6 @@ import (
 )
 
 func GetEventsService(payload commonStructs.GetEventsServicePayload) utils.ResponseBody {
-
 	validator := utils.CustomValidator{
 		Validator: validator.New(),
 	}

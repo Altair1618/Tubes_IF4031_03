@@ -1,4 +1,4 @@
-package eventService
+package ticketService
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func UpdateEventService(id uuid.UUID, payload commonStructs.UpdateEventServicePayload) utils.ResponseBody {
+func UpdateTicketService(id uuid.UUID, payload commonStructs.UpdateTicketServicePayload) utils.ResponseBody {
 	validator := utils.CustomValidator{
 		Validator: validator.New(),
 	}
@@ -24,19 +24,21 @@ func UpdateEventService(id uuid.UUID, payload commonStructs.UpdateEventServicePa
 		}
 	}
 
-	event := models.Event{
+	ticket := models.Ticket{
 		Id:        id,
-		EventName: payload.EventName,
-		EventTime: payload.EventTime,
-		Location:  payload.Location,
+		Price:    payload.Price,
+		EventId:  payload.EventId,
+		SeatId:  payload.SeatId,
+		Status:  payload.Status,
 	}
 
 	db, _ := configs.GetGormClient()
 
-	result := db.Model(&event).Updates(models.Event{
-		EventName: payload.EventName,
-		EventTime: payload.EventTime,
-		Location:  payload.Location,
+	result := db.Model(&ticket).Updates(models.Ticket{
+		Price:    payload.Price,
+		EventId:  payload.EventId,
+		SeatId:  payload.SeatId,
+		Status:  payload.Status,
 	})
 
 	if result.Error != nil {
@@ -51,14 +53,14 @@ func UpdateEventService(id uuid.UUID, payload commonStructs.UpdateEventServicePa
 		if result.RowsAffected == 0 {
 			return utils.ResponseBody{
 				Code:    404,
-				Message: "Event Not Found",
+				Message: "Ticket Not Found",
 				Data:    nil,
 			}
 		}
 		
 		return utils.ResponseBody{
 			Code:    200,
-			Message: "Event Data Updated Successfully",
+			Message: "Ticket Data Updated Successfully",
 			Data:    nil,
 		}
 	}

@@ -20,6 +20,8 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	RegisterValidation(cv, "is_category", CategoryValidation)
 	RegisterValidation(cv, "is_sort", SortValidation)
 	RegisterValidation(cv, "is_payment_status", PaymentStatusValidation)
+	RegisterValidation(cv, "is_price", PriceValidation)
+	RegisterValidation(cv, "is_seat_number", SeatNumberValidation)
 
 	if err := cv.Validator.Struct(i); err != nil {
 		return err
@@ -56,6 +58,10 @@ func GetValidationErrorMessages(err error) []FieldError {
 				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid sort", err.Value())})
 			case "is_payment_status":
 				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid payment status", err.Value())})
+			case "is_price":
+				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: "Price must be greater than or equal to 0"})
+			case "is_seat_number":
+				errMessages = append(errMessages, FieldError{Field: err.Field(), Message: fmt.Sprintf("%s not a valid seat number", err.Value())})
 			}
 		}
 	}
@@ -139,4 +145,16 @@ func PaymentStatusValidation(fl validator.FieldLevel) bool {
 	}
 
 	return value == "FAILED" || value == "SUCCESS"
+}
+
+func PriceValidation(fl validator.FieldLevel) bool {
+	return fl.Field().Int() >= 0
+}
+
+func SeatNumberValidation(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+
+	regex, _ := regexp.Compile(`^[A-Z]{2}[0-9]{3}$`)
+
+	return regex.MatchString(value)
 }

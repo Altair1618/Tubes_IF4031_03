@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
+func GetEventTicketsService(id uuid.UUID) utils.ResponseBody {
 	db, _ := configs.GetGormClient()
 
 	var event models.Event
@@ -33,10 +33,23 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 			}
 		}
 		
-		return utils.ResponseBody{
-			Code:    200,
-			Message: "Event Data Fetched Successfully",
-			Data:    fiber.Map{"event": event},
+		var tickets []models.Ticket
+		result := db.Find(&tickets, "event_id = ?", id)
+
+		if result.Error != nil {
+			fmt.Println(result.Error)
+
+			return utils.ResponseBody{
+				Code:    500,
+				Message: "Error While Fetching Data From Database",
+				Data:    nil,
+			}
+		} else {
+			return utils.ResponseBody{
+				Code:    200,
+				Message: "Event Tickets Data Fetched Successfully",
+				Data:    fiber.Map{"event": event, "tickets": tickets},
+			}
 		}
 	}
 }

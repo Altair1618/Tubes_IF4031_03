@@ -3,7 +3,7 @@
 </script>
 
 {#if isHeader}
-    <th class="font-normal text-sm p-2"><slot/></th>
+    <th class="font-normal text-xs p-2"><slot/></th>
 {:else}
-    <td class="px-2 py-[20px]"><slot/></td>
+    <td class="px-2 text-xs py-[20px]"><slot/></td>
 {/if}
