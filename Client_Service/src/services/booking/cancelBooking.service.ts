@@ -27,7 +27,7 @@ const cancelBookingService = async ({
 		};
 	}
 
-    if (bookingData.status !== BookingStatus.WAITING_FOR_PAYMENT) {
+    if (bookingData.status !== BookingStatus.WAITING_FOR_PAYMENT && bookingData.status !== BookingStatus.IN_QUEUE) {
         return {
             code: 403,
             message: "Cannot cancel ongoing payment"
