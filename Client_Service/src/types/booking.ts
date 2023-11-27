@@ -7,22 +7,16 @@ export interface TicketPriceAndEvent {
 	};
 }
 
-export interface BookingGroup {
-	groupId: number,
-	date: string,
+export interface BookingData {
+	id: string,
+	ticketId: string,
+	status: string,
+    paymentUrl: string | null,
+	createdAt: string,
 	eventName: string,
-	totalPrice: number,
-	overallStatus: string,
-	paymentUrl: string | null,
-	totalPage: number
+	price: number,
 }
 
-export interface BookingGroup {
-	groupId: number,
-	date: string,
-	eventName: string,
-	totalPrice: number,
-	overallStatus: string,
-	paymentUrl: string | null,
+export interface BookingDataWithTotalPage extends BookingData {
 	totalPage: number
 }

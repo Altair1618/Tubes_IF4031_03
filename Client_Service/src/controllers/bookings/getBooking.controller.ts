@@ -1,15 +1,18 @@
 import Elysia from "elysia";
-import getProfileService from "../../services/profile/getProfile.service";
+import getBookingService from "../../services/booking/getBooking.service";
 import { httpResponse } from "../../utils/httpResponse";
 import authMiddleware from "../../middlewares/authMiddleware";
 import parseJWTMiddleware from "../../middlewares/parseJWTMiddleware";
 
 const getBookingGroupController = new Elysia().use(parseJWTMiddleware).get(
-	"/group/:id",
+	"/:id",
 	async ({ auth: { data }, params }) => {
-		const serviceResponse = await getProfileService({
+		const serviceResponse = await getBookingService({
 			userId: data?.userId,
+			bookingId: params.id,
+			jwt: data?.token as string
 		});
+		
 		return httpResponse(serviceResponse);
 	},
 	{

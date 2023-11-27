@@ -9,8 +9,8 @@ const getBookingsController = new Elysia().use(parseJWTMiddleware).get(
 	async ({ auth: { data }, query }) => {
 		const serviceResponse = await getBookingsService({
 			userId: data?.userId,
-			jwt: data?.token as string,
-			page: query.page ?? "1"
+			page: query.page ?? "1",
+			jwt: data?.token as string
 		});
 		return httpResponse(serviceResponse);
 	},

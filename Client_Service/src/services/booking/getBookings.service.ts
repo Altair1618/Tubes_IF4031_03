@@ -1,7 +1,7 @@
 import { db } from "../../configs/drizzle";
 import { ServiceResponse } from "../../types/common";
 import { GetBookingsServicePayload } from "../../dto/booking/getBookings.dto";
-import { TicketPriceAndEvent, BookingGroup} from "../../types/booking";
+import { BookingDataWithTotalPage, TicketPriceAndEvent} from "../../types/booking";
 import { sql } from 'drizzle-orm' 
 import { TicketServiceResponse } from "../../types/common";
 
@@ -15,27 +15,19 @@ const getBookingsService = async ({
 	page
 }: GetBookingsServicePayload): Promise<ServiceResponse> => {
 
-	const MAX_GROUP_PER_PAGE = 5
+	const MAX_BOOKING_PER_PAGE = 10
 
 	const query = sql`
-		WITH distinct_groups AS (
-			SELECT DISTINCT "group_id"
+		WITH total_page as (
+			SELECT CEIL(CAST(COUNT("id") AS FLOAT) / ${MAX_BOOKING_PER_PAGE}) AS count
 			FROM "booking_history"
-			WHERE "user_id" = ${userId}
-			ORDER BY "group_id" ASC
-			OFFSET ${parseInt(page)}
-			LIMIT ${MAX_GROUP_PER_PAGE}
-		),
-
-		total_group as (
-			SELECT COUNT(DISTINCT "group_id") as count
-			from "booking_history"
 		)
 
-		SELECT "ticket_id", "status", "group_id", "report", "created_at", total_group.count as total_page
+		SELECT "id", "ticket_id", "status", "report", "created_at", total_page.count as "total_page"
 		FROM "booking_history"
-		WHERE "user_id" = ${userId} AND "group_id" IN (SELECT "group_id" FROM distinct_groups)
-		ORDER BY "group_id" ASC;
+		WHERE "user_id" = ${userId}
+		OFFSET ${MAX_BOOKING_PER_PAGE * (parseInt(page) - 1)}
+		LIMIT ${MAX_BOOKING_PER_PAGE}
 	`;
 
 	const bookingsData = await db.execute(query)
@@ -59,52 +51,35 @@ const getBookingsService = async ({
 
 	const responseData = await response.json() as TicketServiceResponse<TicketPriceAndEvent>;
 
-	const tiketPricesAndEventNames = responseData.data
-	const bookingGroups: BookingGroup[] = []
-	const bookingDict: GroupDictionary = {}
+	const tiketPricesAndEventNames = responseData.data;
+	const bookings: BookingDataWithTotalPage[]  = []
 
 	bookingsData.rows.forEach((elmt) => {
+		const id = elmt['id'] as string;
+		const ticketId = elmt['ticket_id'] as string;
+		const status = elmt['status'] as string;
+		const paymentUrl = elmt['report'] as string | null;
+		const createdAt = elmt['created_at'] as string;
+		const eventName = tiketPricesAndEventNames[ticketId].eventName;
+		const price = tiketPricesAndEventNames[ticketId].price;
+		const totalPage = elmt['total_page'] as number;
 
-		const groupId = elmt['group_id'] as number
-		const ticketId = elmt['ticket_id'] as string
-		const status = elmt['status'] as string
-
-		if (!bookingDict[groupId])
-		{
-			bookingDict[groupId] = true
-
-			const date = elmt['date'] as string
-			const eventName = tiketPricesAndEventNames[ticketId].eventName
-			const totalPrice = tiketPricesAndEventNames[ticketId].price
-			const overallStatus = status
-			const paymentUrl = elmt['report'] as string | null
-			const totalPage = elmt['total_page'] as number
-
-			const bookingGroup: BookingGroup = {
-				groupId,
-				date,
-				eventName,
-				totalPrice,
-				overallStatus,
-				paymentUrl,
-				totalPage
-			}
-
-			bookingGroups.push(bookingGroup)
-		}
-
-		else
-		{
-			const lastGroup = bookingGroups[bookingGroups.length - 1]
-			lastGroup.totalPrice += tiketPricesAndEventNames[ticketId].price
-			// UPDATE STATUS
-		}
+		bookings.push({
+			id,
+			ticketId,
+			status,
+			paymentUrl,
+			createdAt,
+			eventName,
+			price,
+			totalPage
+		})
 	})
 
 	return {
 		code: 200,
 		message: "Success",
-		data: bookingsData
+		data: bookings
 	}
 };
 

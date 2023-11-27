@@ -1,8 +1,16 @@
 import { z } from "zod";
-import { isNumeric } from "../../utils/parser";
 
-export const getBookingGroupSchema = z.object({
+export const getBookingSchema = z.object({
 	userId: z
+		.string({
+			required_error: "User ID is required",
+			invalid_type_error: "User ID is not in a valid type",
+		})
+		.trim()
+		.min(1, {
+			message: "User ID is required",
+		}),
+	bookingId: z
 		.string({
 			required_error: "User ID is required",
 			invalid_type_error: "User ID is not in a valid type",
@@ -20,11 +28,6 @@ export const getBookingGroupSchema = z.object({
 		.min(1, {
 			message: "JWT Token is required",
 		}),
-    groupId: z
-        .string({
-            required_error: "Group ID is required",
-        })
-        .refine(v => isNumeric(v), {message: "Invalid Group ID"})
 });
 
-export type GetBookingGroupServicePayload = z.infer<typeof getBookingGroupSchema>;
+export type GetBookingServicePayload = z.infer<typeof getBookingSchema>;
