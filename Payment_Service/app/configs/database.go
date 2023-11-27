@@ -24,7 +24,7 @@ func GetMongoClient() (*mongo.Client, error) {
 		username := viper.Get("MONGO_INITDB_ROOT_USERNAME").(string)
 		password := viper.Get("MONGO_INITDB_ROOT_PASSWORD").(string)
 		if username == "" || password == "" {
-			log.Fatal("Undefined DB credentials on .env")
+			log.Fatal("Incomplete DB credentials on .env")
 		}
 		clientOptions := options.Client().ApplyURI(uri).SetAuth(options.Credential{
 			Username: username,
