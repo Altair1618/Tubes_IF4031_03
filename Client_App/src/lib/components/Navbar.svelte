@@ -12,7 +12,7 @@
 </script>
 
 <div class="w-full border-b border-slate-200 fixed top-0 z-20 bg-zinc-50/10 backdrop-blur-md">
-	<div class="w-full max-w-2xl mx-auto flex items-center px-4 py-2 justify-between">
+	<div class="w-full max-w-4xl mx-auto flex items-center px-4 py-2 justify-between">
 		<a class="text-2xl sm:text-4xl font-semibold" href="/">TESSERA</a>
 		<DropdownMenu.Root preventScroll={false}>
 			<DropdownMenu.Trigger>

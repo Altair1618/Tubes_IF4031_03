@@ -9,6 +9,6 @@
 
 <Toaster />
 <Navbar user={data.user} />
-<div class="w-full max-w-2xl mx-auto min-h-screen flex flex-col px-4 py-16">
+<div class="w-full max-w-4xl mx-auto min-h-screen flex flex-col px-4 py-16">
 	<slot />
 </div>

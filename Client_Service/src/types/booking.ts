@@ -1,9 +1,11 @@
 export interface TicketPriceAndEvent {
 	[key: string]: {
 		price: number,
+		seatId: string,
     	eventName: string,
 		eventTime: string,
-		location: string
+		location: string,
+		paymentUrl: string | null,
 	};
 }
 
@@ -12,8 +14,10 @@ export interface BookingData {
 	ticketId: string,
 	status: string,
     paymentUrl: string | null,
+	report: string | null,
 	createdAt: string,
 	price: number,
+	seatId: string,
 	eventName: string,
 	eventTime: string,
 	location: string

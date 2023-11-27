@@ -58,7 +58,7 @@ const getBookingsService = async ({
 		const id = elmt['id'] as string;
 		const ticketId = elmt['ticket_id'] as string;
 		const status = elmt['status'] as string;
-		const paymentUrl = elmt['report'] as string | null;
+		const report = elmt['report'] as string | null;
 		const createdAt = elmt['created_at'] as string;
 		const totalPage = elmt['total_page'] as number;
 
@@ -66,7 +66,7 @@ const getBookingsService = async ({
 			id,
 			ticketId,
 			status,
-			paymentUrl,
+			report,
 			createdAt,
 			totalPage,
 			...tiketPricesAndEventNames[ticketId]
