@@ -10,15 +10,6 @@ import (
 func GetEventsController(c *fiber.Ctx) error {
 	payload := new(commonStructs.GetEventsServicePayload)
 
-	// payload.Query = c.Query("query")
-	// page, err := strconv.Atoi(c.Query("page"))
-
-	// if err != nil {
-	// 	page = 1
-	// }
-
-	// payload.Page = page
-
 	if err := c.QueryParser(payload); err != nil {
 		return utils.CreateResponseBody(c, utils.ResponseBody{
 			Code: fiber.StatusBadRequest,
