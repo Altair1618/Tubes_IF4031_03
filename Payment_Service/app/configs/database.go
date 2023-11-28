@@ -1,42 +1,35 @@
 package configs
 
 import (
-	"context"
+	"fmt"
 	"log"
 	"sync"
 
 	"github.com/spf13/viper"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var clientInstance *mongo.Client
+var clientInstance *gorm.DB
 var clientInstanceError error
-var mongoOnce sync.Once
+var gormOnce sync.Once
 
-func GetMongoClient() (*mongo.Client, error) {
-	mongoOnce.Do(func() {
-		uri := viper.Get("MONGODB_URI").(string)
-		if uri == "" {
-			log.Fatal("MONGODB_URI is not defined on .env")
-		}
+func GetGormClient() (*gorm.DB, error) {
+	gormOnce.Do(func() {
+		dbHost := viper.Get("POSTGRES_HOST")
+		dbUser := viper.Get("POSTGRES_USER")
+		dbPassword := viper.Get("POSTGRES_PASSWORD")
+		dbName := viper.Get("POSTGRES_DB")
+		dbPort := viper.Get("POSTGRES_PORT")
 
-		username := viper.Get("MONGO_INITDB_ROOT_USERNAME").(string)
-		password := viper.Get("MONGO_INITDB_ROOT_PASSWORD").(string)
-		if username == "" || password == "" {
+		if dbHost == "" || dbUser == "" || dbPassword == "" || dbName == "" || dbPort == "" {
 			log.Fatal("Incomplete DB credentials on .env")
 		}
-		clientOptions := options.Client().ApplyURI(uri).SetAuth(options.Credential{
-			Username: username,
-			Password: password,
-		})
 
-		client, err := mongo.Connect(context.Background(), clientOptions)
-		if err != nil {
-			clientInstanceError = err
-		}
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", dbHost, dbUser, dbPassword, dbName, dbPort)
 
-		err = client.Ping(context.TODO(), nil)
+		client, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
 		if err != nil {
 			clientInstanceError = err
 		}
