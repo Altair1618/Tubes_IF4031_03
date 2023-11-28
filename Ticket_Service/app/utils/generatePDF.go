@@ -10,7 +10,7 @@ import (
 	"golang.org/x/text/message"
 )
 
-func GeneratePDF(success bool, bookingId string, data interface{}) error {
+func GeneratePDF(success bool, userId string, bookingId string, data interface{}) (string, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "B", 32)
@@ -46,18 +46,21 @@ func GeneratePDF(success bool, bookingId string, data interface{}) error {
 		pdf.Cell(0, 10, fmt.Sprintf(": %s\n", failedData.ErrorMessage))
 	}
 
-	if err := pdf.OutputFileAndClose("./public/invoices/" + bookingId + ".pdf"); err != nil {
+	pdfPath := "./public"
+	pdfName := fmt.Sprintf("/reports/%s_%s.pdf", userId, bookingId)
+
+	if err := pdf.OutputFileAndClose(fmt.Sprintf("%s%s", pdfPath, pdfName)); err != nil {
 		fmt.Println(err.Error())
-		return err
+		return "", err
 	}
 
 	if success {
 		// delete qr image
 		if err := os.Remove(fmt.Sprintf("./out/%s.png", bookingId)); err != nil {
 			fmt.Println(err)
-			return err
+			return "", err
 		}
 	}
 
-	return nil
+	return pdfName, nil
 }
