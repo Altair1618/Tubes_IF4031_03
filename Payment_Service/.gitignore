@@ -2,3 +2,4 @@ db/
 tmp/
 .env
 .env.local
+queue/
