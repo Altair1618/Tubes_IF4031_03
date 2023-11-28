@@ -20,7 +20,6 @@ func AuthMiddleware(c *fiber.Ctx) error {
 			Message: "Unauthorized",
 		}
 		return utils.CreateResponseBody(c, responseBody)
-
 	}
 
 	authorizationHeader := c.Get("authorization")
