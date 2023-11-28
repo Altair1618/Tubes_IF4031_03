@@ -5,13 +5,18 @@ import type { ClientServiceResponse } from '$lib/types/common';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { updateProfileSchema } from '$lib/dto/profile/updateProfile.dto';
 
-interface History {
-	groupId: string,
-	date: string,
+interface HistoryResponseData {
+	id: string,
+	ticketId: string,
+	status: string,
+    paymentUrl: string | null,
+	report: string | null,
+	createdAt: string,
+	seatId: string,
+	price: number,
 	eventName: string,
-	totalPrice: number,
-	overallStatus: string,
-	paymentUrl: string,
+	eventTime: string,
+	location: string
 	totalPage: number
 }
 
@@ -28,7 +33,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 		},
 		credentials: 'include'
 	});
-	const responseData: ClientServiceResponse<History[]> = await response.json();
+	const responseData: ClientServiceResponse<HistoryResponseData[]> = await response.json();
 
 	if (!response.ok) {
 		throw error(response.status, responseData.message);

@@ -7,10 +7,10 @@ export enum BookingStatus {
 	WAITING_FOR_PAYMENT = "WAITING FOR PAYMENT", 
 	PURCHASING = "PURCHASING", 
 	FAILED = "FAILED"
-  }
+}
 
 export const bookingStatus = pgEnum(
-	"status", 
+	"booking_status", 
 	Object.values(BookingStatus) as [string]
 )
 
