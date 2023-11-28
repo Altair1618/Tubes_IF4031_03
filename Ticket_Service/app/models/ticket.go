@@ -11,6 +11,7 @@ type Ticket struct {
 	Id        uuid.UUID                  `gorm:"type:uuid;default:gen_random_uuid();primaryKey;column:id"`
 	Price     int                        `gorm:"not null;column:price"`
 	EventId   uuid.UUID                  `gorm:"type:uuid;not null;column:event_id;uniqueIndex:unique_seat_constraint"`
+	Event     Event                      `gorm:"foreignKey:EventId;references:Id"`
 	SeatId    string                     `gorm:"not null;column:seat_id;uniqueIndex:unique_seat_constraint"`
 	Status    commonStructs.TicketStatus `gorm:"not null;default:OPEN;column:status"`
 	CreatedAt time.Time                  `gorm:"autoCreateTime;column:created_at"`
