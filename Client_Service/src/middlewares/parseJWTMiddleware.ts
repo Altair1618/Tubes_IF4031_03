@@ -1,5 +1,5 @@
 import Elysia from "elysia";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import { auth } from "../configs/lucia";
 
 interface CustomJwtPayload extends jwt.JwtPayload {
@@ -48,10 +48,13 @@ const parseJWTMiddleware = new Elysia({ name: "authMiddleware" }).derive(
 
 			await auth.validateSession(decodedToken.sessionId);
 
+			// create new jwt token for intra service communication
+			const newToken = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 5), sessionId: decodedToken.sessionId, userId: decodedToken.userI, secret: process.env.JWT_TOKEN_SECRET}, process.env.RSA_PRIVATE_KEY as string, { algorithm: "RS256"}) 
+
 			return {
 				auth: {
 					success: true,
-					data: { token: token, ...decodedToken } as CustomJwtPayload,
+					data: { token: newToken, ...decodedToken } as CustomJwtPayload,
 				},
 			};
 		} catch (e) {

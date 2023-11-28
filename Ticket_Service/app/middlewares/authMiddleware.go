@@ -65,6 +65,16 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	userData := commonStructs.JWTPayload{
 		UserId:    claims["userId"].(string),
 		SessionId: claims["sessionId"].(string),
+		Secret:    claims["secret"].(string),
+	}
+
+	if userData.Secret != viper.Get("JWT_TOKEN_SECRET") {
+		responseBody := utils.ResponseBody{
+			Code:    401,
+			Message: "Unauthorized",
+		}
+
+		return utils.CreateResponseBody(c, responseBody)
 	}
 
 	c.Locals("userInfo", userData)
