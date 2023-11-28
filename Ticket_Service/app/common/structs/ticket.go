@@ -39,3 +39,7 @@ type UpdateStatusServicePayload struct {
 	Status    PaymentStatus `json:"status" form:"status"`
 	UserId    string        `json:"userId" form:"userId"`
 }
+
+type GetManyTicketsByIdsPayload struct {
+	Ids []string `query:"ids[]"`
+}

@@ -1,8 +1,7 @@
 package ticketController
 
 import (
-	"strings"
-
+	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	ticketService "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/services/ticket"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
@@ -10,15 +9,22 @@ import (
 )
 
 func GetManyTicketsByIdsController(c *fiber.Ctx) error {
-	// Get the "ids" parameter from the URL
-	idsParam := c.Params("ids")
 
-	// Split the parameter into an array of strings
-	idStrings := strings.Split(idsParam, ",")
+	payload := new (commonStructs.GetManyTicketsByIdsPayload)
+
+	if err := c.QueryParser(payload); err != nil {
+		return utils.CreateResponseBody(c, utils.ResponseBody{
+			Code:    fiber.StatusBadRequest,
+			Message: "Invalid list of ids",
+		})
+	}
+
+	// Get the "ids" parameter from the URL
+	ids := payload.Ids
 
 	// Convert the strings to UUIDs
-	uuids := make([]uuid.UUID, len(idStrings))
-	for i, id := range idStrings {
+	uuids := make([]uuid.UUID, len(ids))
+	for i, id := range ids {
 		parsedUUID, err := uuid.Parse(id)
 		if err != nil {
 			return utils.CreateResponseBody(c, utils.ResponseBody{
