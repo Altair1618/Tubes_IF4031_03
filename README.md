@@ -22,3 +22,20 @@ Payment App atau service yang menyediakan payment gateway.
 ## Menjalankan Program
 
 Ikuti readme pada masing-masing folder.
+
+## Postman
+### Booking
+![Booking](/assets//postman1.jpg)
+### Create Invoice
+![Invoice](/assets//postman2.jpg)
+### Payment
+![Payment](/assets//postman3.jpg)
+
+## Client
+### Sign In
+![Sign In](/assets//client1.jpg)
+### Profile
+![Profile](/assets//client2.jpg)
+### History
+![History](/assets//client3.jpg)
+
