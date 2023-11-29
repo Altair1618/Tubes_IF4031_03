@@ -8,15 +8,14 @@ import (
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
-func RequestBookingService(ticketId uuid.UUID) utils.ResponseBody {
+func RequestBookingService(payload commonStructs.RequestBookingServicePayload) utils.ResponseBody {
 	// Check if ticket exists
 	db, _ := configs.GetGormClient()
 
 	var ticket models.Ticket
-	result := db.First(&ticket, "id = ?", ticketId)
+	result := db.First(&ticket, "id = ?", payload.TicketId)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
@@ -37,13 +36,23 @@ func RequestBookingService(ticketId uuid.UUID) utils.ResponseBody {
 	}
 
 	// Simulate Failed External Call
-	if utils.SimulateProbability(20) {
-		// TODO: Generate PDF
+	if !utils.SimulateProbability(20) {
+		url, err := utils.GeneratePDF(false, payload.UserId, payload.BookingId.String(), "ERROR: Payment Process Failed")
+
+		if err != nil {
+			fmt.Println(err)
+
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: "Failed To Book Ticket",
+				Data:    fiber.Map{"status": "FAILED", "pdf_url": ""},
+			}
+		}
 
 		return utils.ResponseBody{
 			Code:    fiber.StatusInternalServerError,
 			Message: "Failed To Book Ticket",
-			Data:    fiber.Map{"status": "failed"},
+			Data:    fiber.Map{"status": "FAILED", "pdf_url": url},
 		}
 	}
 
@@ -67,6 +76,6 @@ func RequestBookingService(ticketId uuid.UUID) utils.ResponseBody {
 	return utils.ResponseBody{
 		Code:    fiber.StatusOK,
 		Message: "Ticket Booked Successfully",
-		Data:    fiber.Map{"status": "ongoing"},
+		Data:    fiber.Map{"status": "ONGOING"},
 	}
 }
