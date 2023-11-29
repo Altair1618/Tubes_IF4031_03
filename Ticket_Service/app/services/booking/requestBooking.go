@@ -22,18 +22,46 @@ func RequestBookingService(payload commonStructs.RequestBookingServicePayload) u
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
+		url, err := utils.GeneratePDF(false, payload.UserId, payload.BookingId.String(), commonStructs.FailedPDFPayload{
+			ErrorMessage: result.Error.Error(),
+		})
+
+		if err != nil {
+			fmt.Println(err)
+
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: "Error While Fetching Data From Database",
+				Data:    fiber.Map{"status": "FAILED"},
+			}
+		}
+
 		return utils.ResponseBody{
 			Code:    fiber.StatusInternalServerError,
 			Message: "Error While Fetching Data From Database",
-			Data:    nil,
+			Data:    fiber.Map{"status": "FAILED", "pdf_url": url},
 		}
 	}
 
 	if result.RowsAffected == 0 {
+		url, err := utils.GeneratePDF(false, payload.UserId, payload.BookingId.String(), commonStructs.FailedPDFPayload{
+			ErrorMessage: "Ticket Not Found",
+		})
+
+		if err != nil {
+			fmt.Println(err)
+
+			return utils.ResponseBody{
+				Code:    fiber.StatusNotFound,
+				Message: "Ticket Not Found",
+				Data:    fiber.Map{"status": "FAILED"},
+			}
+		}
+
 		return utils.ResponseBody{
 			Code:    fiber.StatusNotFound,
 			Message: "Ticket Not Found",
-			Data:    nil,
+			Data:    fiber.Map{"status": "FAILED", "pdf_url": url},
 		}
 	}
 
@@ -68,15 +96,28 @@ func RequestBookingService(payload commonStructs.RequestBookingServicePayload) u
 	if result.Error != nil {
 		fmt.Println(result.Error)
 
+		url, err := utils.GeneratePDF(false, payload.UserId, payload.BookingId.String(), commonStructs.FailedPDFPayload{
+			ErrorMessage: result.Error.Error(),
+		})
+
+		if err != nil {
+			fmt.Println(err)
+
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: "Error While Updating Data From Database",
+				Data:    fiber.Map{"status": "FAILED"},
+			}
+		}
+
 		return utils.ResponseBody{
 			Code:    fiber.StatusInternalServerError,
 			Message: "Error While Updating Data From Database",
-			Data:    nil,
+			Data:    fiber.Map{"status": "FAILED", "pdf_url": url},
 		}
 	}
 
 	url := fmt.Sprintf("%s/api/v1/invoice", viper.Get("PAYMENT_BASE_URL"))
-	fmt.Println(url)
 	agent := fiber.Post(url).
 		Set("Content-Type", "application/json").
 		Set("Authorization", fmt.Sprintf(payload.Token)).
@@ -86,20 +127,52 @@ func RequestBookingService(payload commonStructs.RequestBookingServicePayload) u
 
 	statusCode, body, errs := agent.Bytes()
 	if len(errs) > 0 {
+		fmt.Println(errs)
+
+		url, err := utils.GeneratePDF(false, payload.UserId, payload.BookingId.String(), commonStructs.FailedPDFPayload{
+			ErrorMessage: "Error While Generating Payment",
+		})
+
+		if err != nil {
+			fmt.Println(err)
+
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: "Error While Generating Payment",
+				Data:    fiber.Map{"status": "FAILED"},
+			}
+		}
+
 		return utils.ResponseBody{
-			Code: statusCode,
+			Code:    statusCode,
 			Message: "Error While Generating Payment",
-			Data: nil,
+			Data:    fiber.Map{"status": "FAILED", "pdf_url": url},
 		}
 	}
 
 	var response fiber.Map
 	err := json.Unmarshal(body, &response)
 	if err != nil {
+		fmt.Println(err)
+
+		url, err := utils.GeneratePDF(false, payload.UserId, payload.BookingId.String(), commonStructs.FailedPDFPayload{
+			ErrorMessage: "Error While Generating Payment",
+		})
+
+		if err != nil {
+			fmt.Println(err)
+
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: "Error While Generating Payment",
+				Data:    fiber.Map{"status": "FAILED"},
+			}
+		}
+
 		return utils.ResponseBody{
-			Code: fiber.StatusInternalServerError,
+			Code:    fiber.StatusInternalServerError,
 			Message: "Error While Generating Payment",
-			Data: nil,
+			Data:    fiber.Map{"status": "FAILED", "pdf_url": url},
 		}
 	}
 

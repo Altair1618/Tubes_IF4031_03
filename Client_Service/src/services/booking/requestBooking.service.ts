@@ -52,11 +52,35 @@ const requestBookingService = async ({
     }
 
     const responseData = await response.json();
-    console.log(responseData)
+    if (!(responseData.data.status && responseData.data.status !== 'FAILED')) {
+        const updateQuery = sql`
+            UPDATE "booking_history"
+            SET "status" = 'FAILED'
+            WHERE "id" = ${bookingId}
+        `;
+
+        try {
+            await db.execute(updateQuery);
+        } catch (e: any) {
+            console.log(e);
+
+            return {
+                code: 500,
+                message: e.message,
+            }
+        }
+
+        return {
+            code: 500,
+            message: responseData.message,
+            data: responseData.data,
+        }
+    }
 
     return {
         code: 200,
         message: "Request Booking Success",
+        data: responseData.data,
     }
 }
 
