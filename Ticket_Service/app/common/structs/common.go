@@ -21,3 +21,9 @@ type JWTPayload struct {
 	SessionId string
 	Secret    string
 }
+
+type HttpResponse[T any] struct {
+	Code    int
+	Message string
+	Data    T
+}
