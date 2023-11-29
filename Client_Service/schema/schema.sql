@@ -1,3 +1,20 @@
+DO $$ BEGIN
+ CREATE TYPE "booking_status" AS ENUM('SUCCESS', 'IN QUEUE', 'WAITING FOR PAYMENT', 'PURCHASING', 'FAILED');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "booking_history" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ticket_id" uuid NOT NULL,
+	"status" "booking_status" NOT NULL,
+	"report" varchar,
+	"user_id" varchar(15) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "booking_history_ticket_id_unique" UNIQUE("ticket_id")
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "user_key" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"user_id" varchar(15) NOT NULL,
@@ -22,6 +39,12 @@ CREATE TABLE IF NOT EXISTS "auth_user" (
 );
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "booking_history" ADD CONSTRAINT "booking_history_user_id_auth_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "auth_user"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "user_key" ADD CONSTRAINT "user_key_user_id_auth_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "auth_user"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -32,6 +55,7 @@ DO $$ BEGIN
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
+
 --> statement-breakpoint
 CREATE OR REPLACE FUNCTION updated_at() RETURNS TRIGGER LANGUAGE PLPGSQL AS $$ BEGIN NEW.updated_at = NOW();
 return NEW;

@@ -60,3 +60,16 @@ export const flyAndScale = (
         easing: cubicOut
     };
 };
+
+const dateTimeStringOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+export const getDateTimeString = (timestamp: string) => {
+    return new Date(timestamp).toLocaleString('en-US', dateTimeStringOptions as any)
+}
