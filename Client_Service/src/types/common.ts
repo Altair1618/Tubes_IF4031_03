@@ -10,3 +10,9 @@ export interface TicketServiceResponse<T> {
 	message: string;
 	data: T;
 }
+
+export interface PaymentServiceResponse<T> {
+	code: number;
+	message: string;
+	data: T;
+}

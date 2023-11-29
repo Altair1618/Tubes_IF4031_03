@@ -88,6 +88,16 @@ func RequestBookingService(payload commonStructs.RequestBookingServicePayload) u
 		}
 	}
 
+	// Check if the ticket is booked or ongoing
+	fmt.Println(ticket.Status)
+	if ticket.Status == commonStructs.Booked || ticket.Status == commonStructs.Ongoing {
+		return utils.ResponseBody{
+			Code:    fiber.StatusAccepted,
+			Message: "Ticket Already Booked, You Are In The Waiting List",
+			Data:    fiber.Map{"status": "BOOKED"},
+		}
+	}
+
 	// Update ticket status
 	ticket.Status = commonStructs.Ongoing
 
