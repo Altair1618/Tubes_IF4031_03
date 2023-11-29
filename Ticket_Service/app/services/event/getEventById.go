@@ -5,7 +5,6 @@ import (
 
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
-	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -13,13 +12,18 @@ import (
 
 func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 	db, _ := configs.GetGormClient()
-	eventResponse := new(commonStructs.EventDetailResponse)
 
-	var event models.Event
-	result := db.First(&event, "id = ?", id)
-
-	if result.Error != nil {
-		fmt.Println(result.Error)
+	rows, err := db.Raw(`
+		SELECT e.id, e.event_name, e.event_time, e.event_location, e.created_at, e.updated_at, COUNT(t.id) AS available_seats
+		FROM events e
+		LEFT JOIN tickets t ON e.id = t.event_id
+		AND t.status = ?
+		GROUP BY e.id
+		HAVING e.id = ?
+	`, commonStructs.Open, id).Rows()
+	
+	if err != nil {
+		fmt.Println(err)
 
 		return utils.ResponseBody{
 			Code:    500,
@@ -27,29 +31,25 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 			Data:    nil,
 		}
 	}
+	
+	defer rows.Close()
 
-	if result.RowsAffected == 0 {
+	if !rows.Next() {
 		return utils.ResponseBody{
-			Code:    404,
+			Code:    fiber.StatusNotFound,
 			Message: "Event Not Found",
 			Data:    nil,
 		}
 	}
 
-	var availableSeats int64
-	db.Model(&models.Ticket{}).Where("event_id = ? AND status = ?", id, commonStructs.Open).Count(&availableSeats)
-	
-	eventResponse.Id = event.Id
-	eventResponse.EventName = event.EventName
-	eventResponse.EventTime = event.EventTime
-	eventResponse.Location = event.Location
-	eventResponse.CreatedAt = event.CreatedAt
-	eventResponse.UpdatedAt = event.UpdatedAt
-	eventResponse.AvailableSeats = int(availableSeats)
+	event := new(commonStructs.EventDetailResponse)
+	for rows.Next() {
+		rows.Scan(&event.Id, &event.EventName, &event.EventTime, &event.Location, &event.CreatedAt, &event.UpdatedAt, &event.AvailableSeats)
+	}
 
 	return utils.ResponseBody{
 		Code:    200,
 		Message: "Event Data Fetched Successfully",
-		Data:    fiber.Map{"event": eventResponse},
+		Data:    fiber.Map{"event": event},
 	}
 }
