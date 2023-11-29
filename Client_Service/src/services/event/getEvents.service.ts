@@ -18,7 +18,6 @@ const getEventsService = async ({
     });
     
     const responseData: any = await response.json();
-    console.log(responseData)
 
     if (responseData.code !== 200) {
         return {
