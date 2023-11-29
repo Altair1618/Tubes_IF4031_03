@@ -1,4 +1,9 @@
 ## Development
+
+Make sure to create network used for all containers:
+```bash
+docker network create tessera_network
+```
 To start the development server run:  
 ```bash
 docker compose up -d

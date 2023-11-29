@@ -34,3 +34,8 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - ./queue:/data 
+
+networks:
+  default:
+    name: tessera_network
+    external: true

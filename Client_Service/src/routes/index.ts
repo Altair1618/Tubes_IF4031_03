@@ -1,6 +1,7 @@
 import Elysia from "elysia";
 import { authRouteV1 } from "./auth";
 import { profileRouteV1 } from "./profile";
+import { bookingRouteV1 } from "./booking";
 import cors from "@elysiajs/cors";
 
 const Routes = (app: Elysia) => {
@@ -14,7 +15,7 @@ const Routes = (app: Elysia) => {
 			}),
 		)
 		.group("/api", (app) =>
-			app.group("/v1", (app) => app.use(profileRouteV1).use(authRouteV1)),
+			app.group("/v1", (app) => app.use(profileRouteV1).use(authRouteV1).use(bookingRouteV1)),
 		);
 };
 
