@@ -7,3 +7,8 @@ export interface ClientServiceResponse<T> {
 export interface User {
 	userId: string;
 }
+
+export interface ComboBoxItem<T> {
+	value: T,
+	label: string
+}
