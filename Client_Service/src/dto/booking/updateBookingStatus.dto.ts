@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const updateBookingSchema = z.object({
 	status: z.enum(["FAILED", "SUCCESS"]),
+	bookingId: z.string(),
 	pdf: z
 		.string({
 			required_error: "pdf is required",
