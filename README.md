@@ -23,6 +23,18 @@ Payment App atau service yang menyediakan payment gateway.
 
 Ikuti readme pada masing-masing folder.
 
+## Seeding Data (Khusus Ticket Service)
+Akses database menggunakan adminer pada localhost:8888  
+System : PostgreSQL  
+Server : ticket_service_db  
+Username : [sesuai env pada ticket service]    
+password : [sesuai env pada ticket service]  
+database : [sesuai env pada ticket service]  
+
+Dapat menggunakan aplikasi lain selain adminer.  
+
+Jalankan SQL pada folder Ticket_Service/schema/dummy.sql   
+
 ## Postman
 ### Booking
 ![Booking](/assets//postman1.jpg)
