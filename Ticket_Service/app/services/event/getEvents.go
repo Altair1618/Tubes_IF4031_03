@@ -5,7 +5,6 @@ import (
 
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
-	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/models"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -32,23 +31,40 @@ func GetEventsService(payload commonStructs.GetEventsServicePayload) utils.Respo
 
 	db, _ := configs.GetGormClient()
 
-	var events []models.Event
+	var events []commonStructs.EventDetailResponse
 
-	result := db.Where("event_name LIKE ?", "%"+query+"%").Limit(10).Offset((page - 1) * 10).Find(&events)
+	rows, err := db.Raw(`
+		SELECT e.id, e.event_name, e.event_time, e.event_location, e.created_at, e.updated_at, COUNT(t.id) AS available_seats
+		FROM events e
+		LEFT JOIN tickets t ON e.id = t.event_id
+		AND t.status = ?
+		WHERE e.event_time > NOW()
+		GROUP BY e.id
+		HAVING e.event_name LIKE ?
+		ORDER BY e.created_at ASC
+		LIMIT ? OFFSET ?
+	`, commonStructs.Open, fmt.Sprintf("%%%s%%", query), 10, (page-1)*10).Rows()
 
-	if result.Error != nil {
-		fmt.Println(result.Error)
+	if err != nil {
+		fmt.Println(err)
 
 		return utils.ResponseBody{
 			Code:    fiber.StatusInternalServerError,
 			Message: "Error While Fetching Data From Database",
 			Data:    nil,
 		}
-	} else {
-		return utils.ResponseBody{
-			Code:    fiber.StatusOK,
-			Message: "Events Data Fetched Successfully",
-			Data:    fiber.Map{"events": events},
-		}
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		event := new(commonStructs.EventDetailResponse)
+		rows.Scan(&event.Id, &event.EventName, &event.EventTime, &event.Location, &event.CreatedAt, &event.UpdatedAt, &event.AvailableSeats)
+		events = append(events, *event)
+	}
+
+	return utils.ResponseBody{
+		Code:    fiber.StatusOK,
+		Message: "Events Data Fetched Successfully",
+		Data:    fiber.Map{"events": events},
 	}
 }

@@ -113,7 +113,7 @@ func processPaymentInit(tx *gorm.DB, task *asynq.Task, payload commonStructs.Pro
 		return false, fiber.Map{"message": "invalid payment token", "invoiceId": invoice}
 	}
 
-	isFailed := utils.SimulateFailure(20)
+	isFailed := utils.SimulateFailure(10)
 	if isFailed {
 		log.Info().Str("type", task.Type()).Msg("payment failed, task process succes ❌")
 		return false, fiber.Map{"message": "payment failed, task process success ❌", "invoiceId": invoice}

@@ -55,7 +55,7 @@
                         <TableContent>
                             <DropdownMenu.Root preventScroll={false}>
                                 <DropdownMenu.Trigger class="w-full flex flex-row justify-center">
-                                    <Button class="p-0" variant="ghost">
+                                    <Button class="p-0 w-full flex flex-grow justify-center" variant="ghost">
                                         <DotsVertical size={16} />
                                     </Button>
                                 </DropdownMenu.Trigger>

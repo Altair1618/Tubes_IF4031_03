@@ -17,4 +17,5 @@ func Bootstrap() {
 	}
 
 	db.AutoMigrate(&models.Ticket{}, &models.Event{}, &models.TicketInvoiceBooking{})
+	db.Migrator().DropColumn(&models.Event{}, "location")
 }
