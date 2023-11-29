@@ -9,6 +9,7 @@ NIM | Nama
 ---
 
 ## Arsitektur Sistem
+![architecture](/assets//architecture.png)
 
 ## Menjalankan Program
 
