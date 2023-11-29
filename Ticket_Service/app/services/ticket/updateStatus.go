@@ -17,7 +17,6 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 
 	var ticketInvoiceBooking models.TicketInvoiceBooking
 
-	// Change all ticket status to booked
 	db.Where("invoice_id = ?", payload.InvoiceId).First(&ticketInvoiceBooking)
 
 	var ticket models.Ticket
@@ -47,6 +46,7 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 	// begin transaction
 	tx := db.Begin()
 
+	// Change ticket status to booked
 	ticket.Status = "BOOKED"
 	tx.Save(&ticket)
 
@@ -69,7 +69,6 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 	}
 
 	// TODO: Sent pdf to client service
-
 	tx.Commit()
 
 	// end transaction
