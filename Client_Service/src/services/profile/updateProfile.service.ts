@@ -10,6 +10,7 @@ const updateProfileService = async ({
 	name,
 }: UpdateProfileServicePayload): Promise<ServiceResponse> => {
 	const validateResult = updateProfileSchema.safeParse({ name });
+
 	if (!validateResult.success) {
 		return {
 			code: 400,
