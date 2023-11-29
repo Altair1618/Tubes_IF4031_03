@@ -11,7 +11,7 @@ const (
 )
 
 type UpdateTicketStatusRequest struct {
-	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"required"`
+	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"reqommuired"`
 	Status    PaymentStatus `json:"status" form:"status" validate:"required,is_payment_status"`
 }
 
@@ -38,4 +38,8 @@ type UpdateStatusServicePayload struct {
 	InvoiceId string        `json:"invoiceId" form:"invoiceId"`
 	Status    PaymentStatus `json:"status" form:"status"`
 	UserId    string        `json:"userId" form:"userId"`
+}
+
+type GetManyTicketsByIdsPayload struct {
+	Ids string `query:"ids"`
 }

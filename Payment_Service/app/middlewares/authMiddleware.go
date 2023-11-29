@@ -21,9 +21,9 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		}
 		return utils.CreateResponseBody(c, responseBody)
 	}
-
+	
 	authorizationHeader := c.Get("authorization")
-
+	
 	authorizationHeaderArray := strings.Split(authorizationHeader, " ")
 	tokenType := authorizationHeaderArray[0]
 
@@ -44,6 +44,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 		return pubKeyRSAForm, nil
 	})
+
 	if err != nil {
 		responseBody := utils.ResponseBody{
 			Code:    401,

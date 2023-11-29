@@ -30,3 +30,8 @@ services:
       - "8888:8080"
     depends_on:
       - ticket_service_db
+
+networks:
+  default:
+    name: tessera_network
+    external: true

@@ -16,7 +16,6 @@ const getBookingsService = async ({
 }: GetBookingsServicePayload): Promise<ServiceResponse> => {
 
 	const MAX_BOOKING_PER_PAGE = 10
-
 	const query = sql`
 		WITH total_page as (
 			SELECT CEIL(CAST(COUNT("id") AS FLOAT) / ${MAX_BOOKING_PER_PAGE}) AS count
@@ -24,7 +23,7 @@ const getBookingsService = async ({
 		)
 
 		SELECT "id", "ticket_id", "status", "report", "created_at", total_page.count as "total_page"
-		FROM "booking_history"
+		FROM "booking_history", "total_page"
 		WHERE "user_id" = ${userId}
 		OFFSET ${MAX_BOOKING_PER_PAGE * (parseInt(page) - 1)}
 		LIMIT ${MAX_BOOKING_PER_PAGE}
@@ -32,16 +31,10 @@ const getBookingsService = async ({
 
 	const bookingsData = await db.execute(query)
 
-	const tiketIds = bookingsData.rows.map(elmt => elmt['ticket_id'] as string)
-	
-	const params = new URLSearchParams();
-
-	// Append each value of the array as a separate parameter with the same key
-	tiketIds.forEach(tiketId => {
-		params.append('booking_ids[]', tiketId);
-	});
-
-	const response = await fetch(`${process.env.TICKET_SERVICE_BASE_URL}/tikets/ids?${params.toString()}`, {
+	const ticketIds = bookingsData.rows.map(elmt => elmt['ticket_id'] as string)
+	const idsParam = ticketIds.join(',');
+	console.log(`${process.env.TICKET_SERVICE_BASE_URL}/api/v1/tickets?ids=${idsParam}`)
+	const response = await fetch(`${process.env.TICKET_SERVICE_BASE_URL}/api/v1/tickets?ids=${idsParam}`, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${jwt}`
@@ -69,7 +62,7 @@ const getBookingsService = async ({
 			report,
 			createdAt,
 			totalPage,
-			...tiketPricesAndEventNames[ticketId]
+			...(tiketPricesAndEventNames[ticketId] ?? {})
 		})
 	})
 

@@ -48,3 +48,8 @@ services:
       interval: 30s
       timeout: 30s
       retries: 10
+
+networks:
+  default:
+    name: tessera_network
+    external: true
