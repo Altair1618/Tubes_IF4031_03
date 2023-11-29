@@ -1,8 +1,6 @@
 package paymentController
 
 import (
-	"fmt"
-
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/common/structs"
 	paymentService "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/services/payment"
 	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/utils"
@@ -34,19 +32,8 @@ func ProcesPaymentController(c *fiber.Ctx) error {
 	servicePayload := &commonStructs.ProcessPaymentServicePayload{
 		UserId:       c.Locals("userInfo").(commonStructs.JWTPayload).UserId,
 		PaymentToken: payload.PaymentToken,
+		JWTToken:     c.Locals("token").(string),
 	}
-
-	agent := fiber.Patch("http://ticket_service:3069/api/v1/ticket")
-	statusCode, _, errs := agent.Bytes()
-
-	if len(errs) > 0 {
-		return utils.CreateResponseBody(c, utils.ResponseBody{
-			Code:    400,
-			Message: errs[0].Error(),
-		})
-	}
-
-	fmt.Println(statusCode)
 
 	serviceResponse := paymentService.ProcessPaymentService(*servicePayload)
 	return utils.CreateResponseBody(c, serviceResponse)

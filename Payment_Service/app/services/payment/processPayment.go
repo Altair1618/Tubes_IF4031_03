@@ -2,6 +2,7 @@ package paymentService
 
 import (
 	"context"
+	"fmt"
 
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/common/structs"
 	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/configs"
@@ -19,6 +20,7 @@ func ProcessPaymentService(payload commonStructs.ProcessPaymentServicePayload) u
 	}
 
 	if taskErr := configs.GetTaskDistributor().DistributeTaskProcessPayment(context.Background(), &payload, opts...); taskErr != nil {
+		fmt.Printf("ERROR from service: %s", taskErr.Error())
 		log.Err(taskErr).Msg("failed to distribute task")
 	}
 

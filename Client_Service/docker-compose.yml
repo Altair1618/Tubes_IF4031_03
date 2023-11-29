@@ -31,7 +31,7 @@ services:
     image: adminer:latest
     restart: always
     ports:
-      - "8888:8080"
+      - "8080:8080"
     depends_on:
       - client_service_db
 

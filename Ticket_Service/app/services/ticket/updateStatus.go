@@ -9,7 +9,6 @@ import (
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
-	"gorm.io/gorm"
 )
 
 func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload) utils.ResponseBody {
@@ -26,7 +25,7 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 
 	if payload.Status == "FAILED" {
 		url, err := utils.GeneratePDF(false, payload.UserId, ticketInvoiceBooking.BookingId.String(), commonStructs.FailedPDFPayload{
-			ErrorMessage: "Payment process failed",
+			ErrorMessage: payload.Message,
 		})
 
 		if err != nil {
@@ -45,27 +44,35 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 		}
 	}
 
-	db.Transaction(func(tx *gorm.DB) error {
-		ticket.Status = "BOOKED"
-		tx.Save(&ticket)
+	// begin transaction
+	tx := db.Begin()
 
-		// Generate PDF
-		url, err := utils.GeneratePDF(true, payload.UserId, ticketInvoiceBooking.BookingId.String(), commonStructs.SuccessPDFPayload{
-			Price: ticket.Price,
-			Seat:  ticket.SeatId,
-		})
+	ticket.Status = "BOOKED"
+	tx.Save(&ticket)
 
-		// TODO: Call webhook on client service containing the url and status
-		fmt.Println(url)
-
-		if err != nil {
-			log.Error(err.Error())
-			return err
-		}
-
-		// TODO: Sent pdf to client service
-		return nil
+	// Generate PDF
+	url, err := utils.GeneratePDF(true, payload.UserId, ticketInvoiceBooking.BookingId.String(), commonStructs.SuccessPDFPayload{
+		Price: ticket.Price,
+		Seat:  ticket.SeatId,
 	})
+
+	// TODO: Call webhook on client service containing the url and status
+	fmt.Println(url)
+
+	if err != nil {
+		log.Error(err.Error())
+		tx.Rollback()
+		return utils.ResponseBody{
+			Code:    500,
+			Message: fmt.Sprintf("failed to generate pdf: %s", err.Error()),
+		}
+	}
+
+	// TODO: Sent pdf to client service
+
+	tx.Commit()
+
+	// end transaction
 
 	return utils.ResponseBody{
 		Code:    200,
