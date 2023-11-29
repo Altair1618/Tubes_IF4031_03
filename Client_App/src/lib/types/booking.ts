@@ -20,3 +20,7 @@ export interface HistoryResponseData {
 	location: string
 	totalPage: number
 }
+
+export interface CancelBookingResponseData {
+	newStatus: string
+}

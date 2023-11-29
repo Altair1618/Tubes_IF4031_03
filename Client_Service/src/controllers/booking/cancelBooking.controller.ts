@@ -5,14 +5,14 @@ import authMiddleware from "../../middlewares/authMiddleware";
 import parseJWTMiddleware from "../../middlewares/parseJWTMiddleware";
 
 const cancelBookingController = new Elysia().use(parseJWTMiddleware).patch(
-	"/:id/status/cancelled",
+	"/:id/status/cancel",
 	async ({ auth: { data }, params }) => {
 		const serviceResponse = await cancelBookingService({
 			userId: data?.userId,
 			bookingId: params.id,
 			jwt: data?.token as string
 		});
-		
+
 		return httpResponse(serviceResponse);
 	},
 	{

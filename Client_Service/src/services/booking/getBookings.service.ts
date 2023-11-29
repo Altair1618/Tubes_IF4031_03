@@ -1,13 +1,9 @@
 import { db } from "../../configs/drizzle";
 import { ServiceResponse } from "../../types/common";
 import { GetBookingsServicePayload } from "../../dto/booking/getBookings.dto";
-import { BookingDataWithTotalPage, TicketPriceAndEvent} from "../../types/booking";
-import { sql } from 'drizzle-orm' 
+import { BookingDataWithTotalPage, TicketPriceAndEvent } from "../../types/booking";
+import { sql } from 'drizzle-orm'
 import { TicketServiceResponse } from "../../types/common";
-
-interface GroupDictionary {
-	[key: number]: boolean
-}
 
 const getBookingsService = async ({
 	userId,
@@ -29,49 +25,63 @@ const getBookingsService = async ({
 		LIMIT ${MAX_BOOKING_PER_PAGE}
 	`;
 
-	const bookingsData = await db.execute(query)
 
-	const ticketIds = bookingsData.rows.map(elmt => elmt['ticket_id'] as string)
-	const idsParam = ticketIds.join(',');
-	console.log(`${process.env.TICKET_SERVICE_BASE_URL}/api/v1/tickets?ids=${idsParam}`)
-	const response = await fetch(`${process.env.TICKET_SERVICE_BASE_URL}/api/v1/tickets?ids=${idsParam}`, {
-		method: 'GET',
-		headers: {
-			Authorization: `Bearer ${jwt}`
-		},
-		credentials: 'include'
-	});
+	try {
 
-	const responseData = await response.json() as TicketServiceResponse<TicketPriceAndEvent>;
+		const bookingsData = await db.execute(query)
 
-	const tiketPricesAndEvent = responseData.data;
-	const bookings: BookingDataWithTotalPage[]  = []
+		const ticketIds = bookingsData.rows.map(elmt => elmt['ticket_id'] as string)
+		const idsParam = ticketIds.join(',');
 
-	bookingsData.rows.forEach((elmt) => {
-		const id = elmt['id'] as string;
-		const ticketId = elmt['ticket_id'] as string;
-		const status = elmt['status'] as string;
-		const report = elmt['report'] as string | null;
-		const createdAt = elmt['created_at'] as string;
-		const totalPage = elmt['total_page'] as number;
-		const paymentUrl = elmt['payment_url'] as string;
+		const response = await fetch(`${process.env.TICKET_SERVICE_BASE_URL}/api/v1/tickets?ids=${idsParam}`, {
+			method: 'GET',
+			headers: {
+				Authorization: `Bearer ${jwt}`
+			},
+			credentials: 'include'
+		});
 
-		bookings.push({
-			id,
-			ticketId,
-			status,
-			report,
-			createdAt,
-			totalPage,
-			paymentUrl,
-			...(tiketPricesAndEvent.tickets[ticketId] ?? {})
+		const responseData = await response.json() as TicketServiceResponse<TicketPriceAndEvent>;
+
+		const tiketPricesAndEvent = responseData.data;
+		const bookings: BookingDataWithTotalPage[] = []
+
+		bookingsData.rows.forEach((elmt) => {
+			const id = elmt['id'] as string;
+			const ticketId = elmt['ticket_id'] as string;
+			const status = elmt['status'] as string;
+			const report = elmt['report'] as string | null;
+			const createdAt = elmt['created_at'] as string;
+			const totalPage = elmt['total_page'] as number;
+			const paymentUrl = elmt['payment_url'] as string;
+
+			bookings.push({
+				id,
+				ticketId,
+				status,
+				report,
+				createdAt,
+				totalPage,
+				paymentUrl,
+				...(tiketPricesAndEvent.tickets[ticketId] ?? {})
+			})
 		})
-	})
 
-	return {
-		code: 200,
-		message: "Success",
-		data: bookings
+		return {
+			code: 200,
+			message: "Success",
+			data: bookings
+		}
+	}
+
+	catch (e) {
+
+		console.log(e)
+
+		return {
+			code: 500,
+			message: "Internal server error"
+		}
 	}
 };
 

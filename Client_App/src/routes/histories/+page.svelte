@@ -7,10 +7,14 @@
     import { DotsVertical } from 'radix-icons-svelte';
     import { BookingStatus } from '$lib/types/booking.js';
     import { getDateTimeString } from '$lib/utils';
+    import { invalidateAll } from '$app/navigation';
+	import { enhance as enhance2 } from '$app/forms';
     import type { HistoryResponseData } from '$lib/types/booking';
     import InfiniteScroll from '$lib/components/InfiniteScroll.svelte';
 
 	export let data;
+
+    let histories = data.data
 
     
 
@@ -43,7 +47,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each data.data ?? [] as history, idx}
+                {#each histories ?? [] as history, idx}
                     <tr class={`${idx % 2 === 1 ? 'bg-gray-50' : ''} text-sm border-b-[1px] border-gray-200 align-top`}>
                         <TableContent>{history.id}</TableContent>
                         <TableContent>{getDateTimeString(history.createdAt)}</TableContent>
@@ -54,8 +58,8 @@
                         <TableContent>{history.status}</TableContent>
                         <TableContent>
                             <DropdownMenu.Root preventScroll={false}>
-                                <DropdownMenu.Trigger class="w-full flex flex-row justify-center">
-                                    <Button class="p-0 w-full flex flex-grow justify-center" variant="ghost">
+                                <DropdownMenu.Trigger class="w-full flex flex-row justify-center" disabled="{history.status === BookingStatus.PURCHASING || (history.status === BookingStatus.FAILED && !history.report)}">
+                                    <Button class="p-0 w-full flex flex-grow justify-center" variant="ghost" disabled="{history.status === BookingStatus.PURCHASING || (history.status === BookingStatus.FAILED && !history.report)}">
                                         <DotsVertical size={16} />
                                     </Button>
                                 </DropdownMenu.Trigger>
@@ -71,10 +75,36 @@
                                         {/if}
                                         {#if history.status === BookingStatus.IN_QUEUE || history.status === BookingStatus.WAITING_FOR_PAYMENT}
                                             <DropdownMenu.Item>
-                                                <button class="flex items-center gap-2">
+                                                <form
+                                                    action="?/cancelBooking"
+                                                    method="post"
+                                                    use:enhance2={() => {
+                                                        return async ({ result }) => {
+                                                            if (result.type === 'error') {
+                                                                toast.error(result.error.message);
+                                                            } else if (result.type === 'success') {
+                                                                
+                                                                histories.forEach(elmt => {
+                                                                    if (elmt.id === history.id)
+                                                                    {
+                                                                        //@ts-ignore
+                                                                        elmt.status = result.data?.newStatus
+                                                                    }
+                                                                })
+
+                                                                histories = histories;
+                                                                toast.success('Booking cancelled');
+                                                                await invalidateAll();
+                                                            }
+                                                        };
+                                                    }}
+                                                >
+                                                <input name="id" hidden type="text" value="{history.id}"/>
+                                                <button class="flex items-center text-xs gap-2" type="submit">
                                                     <IconCircleX size={18} />
                                                     Cancel booking
                                                 </button>
+                                                </form>
                                             </DropdownMenu.Item>
                                         {/if}
                                         {#if (history.status === BookingStatus.SUCCESS || history.status === BookingStatus.FAILED) && history.report}

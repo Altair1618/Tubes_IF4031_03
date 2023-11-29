@@ -27,7 +27,7 @@ FROM generate_series(1, 1) i;
 
 INSERT INTO tickets (id, price, event_id, seat_id, status, created_at, updated_at)
 SELECT
-    'gen_random_uuid()',
+    gen_random_uuid(),
     50,
     (SELECT id FROM events WHERE event_name = 'Konser Miku'),
     chr(65 + (i / 1000) % 26) || chr(65 + (i / 100) % 26) || 

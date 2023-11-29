@@ -15,5 +15,6 @@ func ticketRouteV1(v1 fiber.Router) {
 	ticket.Put("/:id", ticketController.UpdateTicketController)
 	ticket.Put("/:id/book", middlewares.AuthMiddleware, ticketController.RequestBookingController)
 	ticket.Patch("/", middlewares.AuthMiddleware, ticketController.UpdateStatusController)
+	ticket.Patch("/:id/status/cancel", ticketController.CancelTicketController)
 	ticket.Delete("/:id", ticketController.DeleteTicketController)
 }
