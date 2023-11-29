@@ -28,6 +28,7 @@ func RequestBookingController(c *fiber.Ctx) error {
 	}
 
 	payload := new(commonStructs.RequestBookingServicePayload)
+	payload.Token = c.Locals("token").(string)
 	payload.BookingId = requestPayload.BookingId
 	payload.TicketId = uuid
 	payload.UserId = c.Locals("userInfo").(commonStructs.JWTPayload).UserId
