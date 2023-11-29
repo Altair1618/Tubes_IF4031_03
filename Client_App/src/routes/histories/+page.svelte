@@ -11,7 +11,6 @@
 	import { cn, getDateTimeString } from '$lib/utils';
 	import { invalidateAll } from '$app/navigation';
 	import { enhance as enhance2 } from '$app/forms';
-	import type { HistoryResponseData } from '$lib/types/booking';
 	import type { ComboBoxItem } from '$lib/types/common';
 	import { tick } from 'svelte';
 
@@ -29,7 +28,7 @@
 		}
 	}
 
-	$: selectedPage = pageItems.find((f) => f.value === page)?.label ?? 'Select a framework...';
+	$: selectedPage = pageItems.find((f) => f.value === page)?.label ?? 'Select page...';
 
 	function closeAndFocusTrigger(triggerId: string) {
 		tick().then(() => {
@@ -60,7 +59,7 @@
             <Popover.Content class="w-[200px] p-0">
                 <Command.Root>
                     <Command.Input placeholder="Search page..." />
-                    <Command.Empty>No framework found.</Command.Empty>
+                    <Command.Empty class="text-sm">Page not found.</Command.Empty>
                     <Command.Group>
                         {#each pageItems as pageItem}
                             <form
