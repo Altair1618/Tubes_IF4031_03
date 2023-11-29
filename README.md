@@ -8,10 +8,8 @@ NIM | Nama
 
 ---
 
-## Client App
+## Arsitektur Sistem
 
-## Client Service
+## Menjalankan Program
 
-## Ticket Service
-
-## Payment Service
+Ikuti readme pada masing-masing folder.
