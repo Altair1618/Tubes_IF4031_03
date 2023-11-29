@@ -32,16 +32,10 @@ const getBookingsService = async ({
 
 	const bookingsData = await db.execute(query)
 
-	const tiketIds = bookingsData.rows.map(elmt => elmt['ticket_id'] as string)
-	
-	const params = new URLSearchParams();
+	const ticketIds = bookingsData.rows.map(elmt => elmt['ticket_id'] as string)
+	const idsParam = ticketIds.join(',');
 
-	// Append each value of the array as a separate parameter with the same key
-	tiketIds.forEach(tiketId => {
-		params.append('booking_ids[]', tiketId);
-	});
-
-	const response = await fetch(`${process.env.TICKET_SERVICE_BASE_URL}/tikets/ids?${params.toString()}`, {
+	const response = await fetch(`${process.env.TICKET_SERVICE_BASE_URL}/tikets/ids?ids=${idsParam}`, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${jwt}`

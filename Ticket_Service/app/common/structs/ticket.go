@@ -41,5 +41,5 @@ type UpdateStatusServicePayload struct {
 }
 
 type GetManyTicketsByIdsPayload struct {
-	Ids []string `query:"ids[]"`
+	Ids string `query:"ids"`
 }
