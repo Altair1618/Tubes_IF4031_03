@@ -1,12 +1,13 @@
 export interface TicketPriceAndEvent {
-	[key: string]: {
-		price: number,
-		seatId: string,
-    	eventName: string,
-		eventTime: string,
-		location: string,
-		paymentUrl: string | null,
-	};
+	tickets: {
+		[key: string]: {
+			price: number,
+			seatId: string,
+			eventName: string,
+			eventTime: string,
+			location: string,
+		}	
+	}
 }
 
 export interface BookingData {
@@ -20,7 +21,7 @@ export interface BookingData {
 	seatId: string,
 	eventName: string,
 	eventTime: string,
-	location: string
+	location: string,
 }
 
 export interface BookingDataWithTotalPage extends BookingData {
