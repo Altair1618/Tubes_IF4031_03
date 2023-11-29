@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS "booking_history" (
 	"status" "booking_status" NOT NULL,
 	"report" varchar,
 	"user_id" varchar(15) NOT NULL,
+	"payment_url" varchar,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );

@@ -56,6 +56,8 @@ const processPaymentService = async ({
 			message: "payment processed",
 		};
 	} catch (e) {
+		console.log(e)
+		
 		return {
 			code: 500,
 			message: "something went wrong, please try again later",
