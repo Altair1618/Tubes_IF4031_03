@@ -4,7 +4,7 @@ import type { Actions, PageServerLoad } from './$types';
 import type { ClientServiceResponse } from '$lib/types/common';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import type { CancelBookingResponseData, HistoryResponseData } from '$lib/types/booking';
-import { cancelBookingSchema, movePageSchema } from '$lib/dto/booking/cancelBooking.dto';
+import { cancelBookingSchema, movePageSchema, purchaseSchema } from '$lib/dto/booking/cancelBooking.dto';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
 	const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings`, {
@@ -34,7 +34,7 @@ export const actions = {
 		}
 
 		try {
-			console.log(form.data.id)
+
 			const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings/${form.data.id}/status/cancel`, {
 				method: 'PATCH',
 				headers: {
@@ -73,6 +73,35 @@ export const actions = {
 			headers: {
 				Authorization: `Bearer ${cookies.get('mikuuuu')}`
 			},
+			credentials: 'include'
+		});
+		const responseData: ClientServiceResponse<HistoryResponseData[]> = await response.json();
+	
+		if (!response.ok) {
+			throw error(response.status, responseData.message);
+		}
+
+		return {
+			message: responseData.message,
+			histories: responseData.data
+		};
+	},
+
+	doPayment: async ({ cookies, request }) => {
+		const form = await superValidate(request, purchaseSchema);
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/payment`, {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${cookies.get('mikuuuu')}`
+			},
+			body: JSON.stringify({
+				payment_url: form.data.payment_url
+			}),
 			credentials: 'include'
 		});
 		const responseData: ClientServiceResponse<HistoryResponseData[]> = await response.json();

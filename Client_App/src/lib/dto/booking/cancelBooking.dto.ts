@@ -14,3 +14,11 @@ export const movePageSchema = z.object({
     .number({ required_error: 'Page is required' })
     .min(1, { message: 'Page 1 is minimum' })
 })
+
+export const purchaseSchema = z.object({
+  payment_url: z
+
+  .string({ required_error: 'Payment URL is required' })
+  .trim()
+  .min(1, { message: 'Payment URL is required' })
+})

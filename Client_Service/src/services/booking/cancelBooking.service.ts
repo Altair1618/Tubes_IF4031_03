@@ -48,7 +48,7 @@ const cancelBookingService = async ({
 					credentials: 'include'
 				});
 			}
-
+		
 			await tx
 				.update(booking)
 				.set({ status: newStatus })

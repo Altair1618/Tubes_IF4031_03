@@ -158,10 +158,34 @@
 									<DropdownMenu.Group>
 										{#if history.status === BookingStatus.WAITING_FOR_PAYMENT && history.paymentUrl}
 											<DropdownMenu.Item>
-												<a href={history.paymentUrl} class="flex items-center gap-2">
-													<IconCreditCard size={18} />
-													Purchase
-												</a>
+												<form
+													action="?/doPayment"
+													method="post"
+													use:enhance2={() => {
+														return async ({ result }) => {
+															if (result.type === 'error') {
+																toast.error(result.error.message);
+															} else if (result.type === 'success') {
+																histories.forEach((elmt) => {
+																	if (elmt.id === history.id) {
+																		//@ts-ignore
+																		elmt.status = BookingStatus.PURCHASING;
+																	}
+																});
+
+																histories = histories;
+																toast.success('Purchasing');
+																await invalidateAll();
+															}
+														};
+													}}
+												>
+													<input name="payment_url" hidden type="text" value={history.paymentUrl} />
+													<button class="flex items-center text-xs gap-2" type="submit">
+														<IconCreditCard size={18} />
+														Purchase
+													</button>
+												</form>
 											</DropdownMenu.Item>
 										{/if}
 										{#if history.status === BookingStatus.IN_QUEUE || history.status === BookingStatus.WAITING_FOR_PAYMENT}
