@@ -6,7 +6,14 @@
     import TableContent from '$lib/components/TableContent.svelte';
     import { DotsVertical } from 'radix-icons-svelte';
     import { BookingStatus } from '$lib/types/booking.js';
+    import { getDateTimeString } from '$lib/utils';
+    import type { HistoryResponseData } from '$lib/types/booking';
+    import InfiniteScroll from '$lib/components/InfiniteScroll.svelte';
+
 	export let data;
+
+    
+
 </script>
 
 <div class="flex flex-1 flex-col gap-4 w-full py-4">
@@ -37,17 +44,17 @@
             </thead>
             <tbody>
                 {#each data.data ?? [] as history, idx}
-                    <tr class={`${idx % 2 === 1 ? 'bg-gray-50' : ''} text-sm border-b-[1px] border-black align-top`}>
-                        {idx}:
+                    <tr class={`${idx % 2 === 1 ? 'bg-gray-50' : ''} text-sm border-b-[1px] border-gray-200 align-top`}>
                         <TableContent>{history.id}</TableContent>
-                        <TableContent>{history.createdAt}</TableContent>
+                        <TableContent>{getDateTimeString(history.createdAt)}</TableContent>
                         <TableContent>{history.eventName}</TableContent>
-                        <TableContent>{history.eventTime + history.location}</TableContent>
+                        <TableContent>{`${getDateTimeString(history.eventTime)}\n${history.location}`}</TableContent>
+                        <TableContent>{history.seatId}</TableContent>
                         <TableContent>{history.price}</TableContent>
                         <TableContent>{history.status}</TableContent>
                         <TableContent>
                             <DropdownMenu.Root preventScroll={false}>
-                                <DropdownMenu.Trigger>
+                                <DropdownMenu.Trigger class="w-full flex flex-row justify-center">
                                     <Button class="p-0" variant="ghost">
                                         <DotsVertical size={16} />
                                     </Button>
@@ -86,7 +93,7 @@
                 {/each}
             </tbody>
         </table>
-        {#if data.data.length > 0}
+        {#if data.data.length === 0}
             <div class="w-full flex flex-row justify-center py-[20px]">
                 <span class="text-seven-font-size-table-content">No booking history</span>
             </div>

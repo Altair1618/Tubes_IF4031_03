@@ -6,7 +6,7 @@ import (
 	"time"
 
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/common/structs"
-	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/configs"
+	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/configs/database"
 	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/models"
 	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/utils"
 	"github.com/go-playground/validator/v10"
@@ -31,8 +31,8 @@ func CreateInvoiceService(payload commonStructs.CreateInvoiceServicePayload) uti
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 1)),
 		},
-		TicketId:         payload.TicketId,
-		UserId:           payload.UserId,
+		TicketId: payload.TicketId,
+		UserId:   payload.UserId,
 	})
 
 	paymentTokenString, err := paymentToken.SignedString([]byte(viper.Get("INVOICE_TOKEN_SECRET").(string)))
@@ -54,7 +54,7 @@ func CreateInvoiceService(payload commonStructs.CreateInvoiceServicePayload) uti
 		UserId:       payload.UserId,
 	}
 
-	db, _ := configs.GetGormClient()
+	db, _ := database.GetGormClient()
 
 	result := db.Create(&invoice)
 

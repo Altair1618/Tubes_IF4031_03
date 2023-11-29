@@ -1,34 +1,53 @@
 package paymentController
 
 import (
-	"context"
+	"fmt"
 
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/common/structs"
-	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/configs"
+	paymentService "github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/services/payment"
 	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/utils"
-	"github.com/Altair1618/Tubes_IF4031_03/Payment_Service/app/utils/worker"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/hibiken/asynq"
-	"github.com/rs/zerolog/log"
 )
 
 func ProcesPaymentController(c *fiber.Ctx) error {
-	taskPayload := &commonStructs.ProcessPaymentServicePayload{
-		UserId:       "this is user id",
-		PaymentToken: "this is payment token",
+	payload := new(commonStructs.ProcessPaymentRequest)
+
+	if err := c.ParamsParser(payload); err != nil {
+		return utils.CreateResponseBody(c, utils.ResponseBody{
+			Code:    fiber.StatusBadRequest,
+			Message: err.Error(),
+		})
 	}
 
-	opts := []asynq.Option{
-		asynq.MaxRetry(10),
-		asynq.Queue(worker.QueueCritical),
+	validator := utils.CustomValidator{
+		Validator: validator.New(),
 	}
 
-	if taskErr := configs.GetTaskDistributor().DistributeTaskProcessPayment(context.Background(), taskPayload, opts...); taskErr != nil {
-		log.Err(taskErr).Msg("failed to distribute task")
+	if err := validator.Validate(payload); err != nil {
+		return utils.CreateResponseBody(c, utils.ResponseBody{
+			Code:    fiber.StatusBadRequest,
+			Message: utils.GetValidationErrorMessages(err)[0].Message,
+		})
 	}
 
-	return utils.CreateResponseBody(c, utils.ResponseBody{
-		Code:    fiber.StatusOK,
-		Message: "queue payment success",
-	})
+	servicePayload := &commonStructs.ProcessPaymentServicePayload{
+		UserId:       c.Locals("userInfo").(commonStructs.JWTPayload).UserId,
+		PaymentToken: payload.PaymentToken,
+	}
+
+	agent := fiber.Patch("http://ticket_service_payment:3069/api/v1/ticket")
+	statusCode, _, errs := agent.Bytes()
+
+	if len(errs) > 0 {
+		return utils.CreateResponseBody(c, utils.ResponseBody{
+			Code:    400,
+			Message: errs[0].Error(),
+		})
+	}
+
+	fmt.Println(statusCode)
+
+	serviceResponse := paymentService.ProcessPaymentService(*servicePayload)
+	return utils.CreateResponseBody(c, serviceResponse)
 }

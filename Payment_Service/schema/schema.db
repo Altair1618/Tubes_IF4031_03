@@ -1,0 +1,5 @@
+CREATE TYPE invoice_status AS ENUM (
+  'SUCCESS',
+  'ONGOING',
+  'FAILED'
+  )
