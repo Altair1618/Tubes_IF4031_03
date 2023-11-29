@@ -1,4 +1,4 @@
-import { GetEventDetailRequest } from "../../dto/event/getEventDetail";
+import { GetEventDetailRequest } from "../../dto/event/getEventDetail.dto";
 import { ServiceResponse } from "../../types/common";
 
 const getEventDetailService = async ({
