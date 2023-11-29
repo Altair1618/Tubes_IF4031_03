@@ -63,7 +63,7 @@ const getBookingsService = async ({
 				createdAt,
 				totalPage,
 				paymentUrl,
-				...(tiketPricesAndEvent.tickets[ticketId] ?? {})
+				...(tiketPricesAndEvent.tickets[ticketId])
 			})
 		})
 

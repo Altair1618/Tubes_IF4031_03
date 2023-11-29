@@ -4,10 +4,10 @@ import type { Actions, PageServerLoad } from './$types';
 import type { ClientServiceResponse } from '$lib/types/common';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import type { CancelBookingResponseData, HistoryResponseData } from '$lib/types/booking';
-import { cancelBookingSchema } from '$lib/dto/booking/cancelBooking.dto';
+import { cancelBookingSchema, movePageSchema } from '$lib/dto/booking/cancelBooking.dto';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
-	const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings?user_id=${locals.user?.userId}`, {
+	const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings`, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${cookies.get('mikuuuu')}`
@@ -59,5 +59,31 @@ export const actions = {
 			console.log(e);
 			return fail(500, { message: "Something went wrong, please try again later" })
 		}
+	},
+	movePage: async ({ cookies, request }) => {
+		const form = await superValidate(request, movePageSchema);
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+		console.log(form.data.page)
+
+		const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings?page=${form.data.page}`, {
+			method: 'GET',
+			headers: {
+				Authorization: `Bearer ${cookies.get('mikuuuu')}`
+			},
+			credentials: 'include'
+		});
+		const responseData: ClientServiceResponse<HistoryResponseData[]> = await response.json();
+	
+		if (!response.ok) {
+			throw error(response.status, responseData.message);
+		}
+
+		return {
+			message: responseData.message,
+			histories: responseData.data
+		};
 	},
 } satisfies Actions;
