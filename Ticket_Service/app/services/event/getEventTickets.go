@@ -32,9 +32,9 @@ func GetEventTicketsService(id uuid.UUID) utils.ResponseBody {
 				Data:    nil,
 			}
 		}
-		
+
 		var tickets []models.Ticket
-		result := db.Find(&tickets, "event_id = ?", id)
+		result := db.Joins("Event").Find(&tickets, "event_id = ?", id)
 
 		if result.Error != nil {
 			fmt.Println(result.Error)
@@ -48,7 +48,7 @@ func GetEventTicketsService(id uuid.UUID) utils.ResponseBody {
 			return utils.ResponseBody{
 				Code:    200,
 				Message: "Event Tickets Data Fetched Successfully",
-				Data:    fiber.Map{"event": event, "tickets": tickets},
+				Data:    fiber.Map{"tickets": tickets},
 			}
 		}
 	}

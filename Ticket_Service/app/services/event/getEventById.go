@@ -32,12 +32,9 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 		}
 	}
 
-<<<<<<< HEAD
 	defer rows.Close()
 
-=======
 	found := false
->>>>>>> 507656de24bc2e71343ce987b0329c3663dbfc63
 	event := new(commonStructs.EventDetailResponse)
 	for rows.Next() {
 		found = true
@@ -46,9 +43,9 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 
 	if !found {
 		return utils.ResponseBody{
-			Code: fiber.StatusNotFound,
+			Code:    fiber.StatusNotFound,
 			Message: "Event Not Found",
-			Data: nil,
+			Data:    nil,
 		}
 	}
 
