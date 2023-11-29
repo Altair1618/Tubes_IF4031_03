@@ -33,6 +33,7 @@ const processPaymentService = async ({
 			const response = await fetch(
 				`${process.env.PAYMENT_SERVICE_BASE_URL}${paymentUrl}`,
 				{
+					method: "PATCH",
 					headers: {
 						Authorization: `Bearer ${jwtToken}`,
 					},
