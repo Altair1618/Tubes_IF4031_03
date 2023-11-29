@@ -33,9 +33,9 @@ Ikuti readme pada masing-masing folder.
 
 ## Client
 ### Sign In
-![Sign In](/assets//client1.jpg)
+![Sign In](/assets//client1.png)
 ### Profile
-![Profile](/assets//client2.jpg)
+![Profile](/assets//client2.png)
 ### History
-![History](/assets//client3.jpg)
+![History](/assets//client3.png)
 
