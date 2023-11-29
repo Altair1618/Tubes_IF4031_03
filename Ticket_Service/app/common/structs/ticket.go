@@ -11,7 +11,7 @@ const (
 )
 
 type UpdateTicketStatusRequest struct {
-	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"required"`
+	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"reqommuired"`
 	Status    PaymentStatus `json:"status" form:"status" validate:"required,is_payment_status"`
 }
 
