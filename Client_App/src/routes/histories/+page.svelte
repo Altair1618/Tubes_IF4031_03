@@ -31,13 +31,15 @@
 
 	$: selectedPage = pageItems.find((f) => f.value === page)?.label ?? 'Select a framework...';
 
-    const getPageData = async (page: number) => {
-        if (page != 1)
-        {
-            histories = []
-        }
+    //@ts-ignore
+    let movePageForm;
 
-        histories = histories
+    const getPageData = async (page: number) => {
+        //@ts-ignore
+        if (movePageForm)
+        {
+            movePageForm.submit()
+        }
     }
 
     $: getPageData(page)
@@ -70,21 +72,41 @@
             </Popover.Trigger>
             <Popover.Content class="w-[200px] p-0">
                 <Command.Root>
-                    <Command.Input placeholder="Search framework..." />
+                    <Command.Input placeholder="Search page..." />
                     <Command.Empty>No framework found.</Command.Empty>
                     <Command.Group>
                         {#each pageItems as pageItem}
-                            <Command.Item
-                                class="text-xs"
-                                value={pageItem.value.toString()}
-                                onSelect={(currentValue) => {
-                                    page = parseInt(currentValue);
-                                    closeAndFocusTrigger(ids.trigger);
+                            <form
+                                action="?/movePage"
+                                method="post"
+                                bind:this={movePageForm}
+                                use:enhance2={() => {
+                                    return async ({ result }) => {
+                                        if (result.type === 'error') {
+                                            toast.error(result.error.message);
+                                        } else if (result.type === 'success') {
+                                            //@ts-ignore
+                                            histories = result.data.histories
+                                            await invalidateAll();
+                                        }
+                                    };
                                 }}
                             >
-                                <Check class={cn('mr-2 h-4 w-4', page !== pageItem.value && 'text-transparent')} />
-                                {pageItem.label}
-                            </Command.Item>
+                                <input name="page" hidden type="number" value={page} />
+                                <button type="submit">
+                                    <Command.Item
+                                        class="text-xs"
+                                        value={pageItem.value.toString()}
+                                        onSelect={(currentValue) => {
+                                            page = parseInt(currentValue);
+                                            closeAndFocusTrigger(ids.trigger);
+                                        }}
+                                    >
+                                        <Check class={cn('mr-2 h-4 w-4', page !== pageItem.value && 'text-transparent')} />
+                                        {pageItem.label}
+                                    </Command.Item>
+                                </button>
+                            </form>
                         {/each}
                     </Command.Group>
                 </Command.Root>
