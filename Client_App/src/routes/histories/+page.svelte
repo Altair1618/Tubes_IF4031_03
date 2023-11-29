@@ -31,19 +31,6 @@
 
 	$: selectedPage = pageItems.find((f) => f.value === page)?.label ?? 'Select a framework...';
 
-    //@ts-ignore
-    let movePageForm;
-
-    const getPageData = async (page: number) => {
-        //@ts-ignore
-        if (movePageForm)
-        {
-            movePageForm.submit()
-        }
-    }
-
-    $: getPageData(page)
-
 	function closeAndFocusTrigger(triggerId: string) {
 		tick().then(() => {
 			document.getElementById(triggerId)?.focus();
@@ -79,7 +66,6 @@
                             <form
                                 action="?/movePage"
                                 method="post"
-                                bind:this={movePageForm}
                                 use:enhance2={() => {
                                     return async ({ result }) => {
                                         if (result.type === 'error') {
@@ -92,8 +78,8 @@
                                     };
                                 }}
                             >
-                                <input name="page" hidden type="number" value={page} />
-                                <button type="submit">
+                                <input name="page" hidden type="number" value={pageItem.value} />
+                                <button type="submit" class="w-full">
                                     <Command.Item
                                         class="text-xs"
                                         value={pageItem.value.toString()}
