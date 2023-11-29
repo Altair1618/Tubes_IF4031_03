@@ -1,7 +1,9 @@
 package ticketService
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/configs"
@@ -9,6 +11,7 @@ import (
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
+	"github.com/spf13/viper"
 )
 
 func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload) utils.ResponseBody {
@@ -35,7 +38,38 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 		}
 
 		// TODO: Call webhook on client service containing the url and status
-		fmt.Println(url)
+		agent := fiber.Patch(fmt.Sprintf("%s/bookings/%s", viper.Get("CLIENT_SERVICE_BASE_URL"), ticketInvoiceBooking.BookingId))
+		agent.Set("Authorization", fmt.Sprintf("Bearer %s", payload.JWTToken))
+		agent.JSON(fiber.Map{
+			"status": payload.Status,
+			"pdf":    url,
+		})
+		statusCode, body, errs := agent.Bytes()
+
+		if len(errs) > 0 {
+			_ = os.Remove(fmt.Sprintf("./public%s", url))
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: errs[0].Error(),
+			}
+		}
+
+		var webhookResponse commonStructs.HttpResponse[interface{}]
+		if err := json.Unmarshal(body, &webhookResponse); err != nil {
+			_ = os.Remove(fmt.Sprintf("./public%s", url))
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+
+		if statusCode != fiber.StatusOK {
+			_ = os.Remove(fmt.Sprintf("./public%s", url))
+			return utils.ResponseBody{
+				Code:    fiber.StatusInternalServerError,
+				Message: webhookResponse.Message,
+			}
+		}
 
 		return utils.ResponseBody{
 			Code:    fiber.StatusOK,
@@ -56,9 +90,6 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 		Seat:  ticket.SeatId,
 	})
 
-	// TODO: Call webhook on client service containing the url and status
-	fmt.Println(url)
-
 	if err != nil {
 		log.Error(err.Error())
 		tx.Rollback()
@@ -69,6 +100,42 @@ func UpdateStatusService(payload commonStructs.UpdateTicketStatusServicePayload)
 	}
 
 	// TODO: Sent pdf to client service
+	agent := fiber.Patch(fmt.Sprintf("%s/bookings/%s", viper.Get("CLIENT_SERVICE_BASE_URL"), ticketInvoiceBooking.BookingId))
+	agent.Set("Authorization", fmt.Sprintf("Bearer %s", payload.JWTToken))
+	agent.JSON(fiber.Map{
+		"status": payload.Status,
+		"pdf":    url,
+	})
+	statusCode, body, errs := agent.Bytes()
+
+	if len(errs) > 0 {
+		_ = os.Remove(fmt.Sprintf("./public%s", url))
+		tx.Rollback()
+		return utils.ResponseBody{
+			Code:    fiber.StatusInternalServerError,
+			Message: errs[0].Error(),
+		}
+	}
+
+	var webhookResponse commonStructs.HttpResponse[interface{}]
+	if err := json.Unmarshal(body, &webhookResponse); err != nil {
+		_ = os.Remove(fmt.Sprintf("./public%s", url))
+		tx.Rollback()
+		return utils.ResponseBody{
+			Code:    fiber.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	}
+
+	if statusCode != fiber.StatusOK {
+		_ = os.Remove(fmt.Sprintf("./public%s", url))
+		tx.Rollback()
+		return utils.ResponseBody{
+			Code:    fiber.StatusInternalServerError,
+			Message: webhookResponse.Message,
+		}
+	}
+
 	tx.Commit()
 
 	// end transaction

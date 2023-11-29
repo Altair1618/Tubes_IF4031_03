@@ -25,6 +25,7 @@ type UpdateTicketStatusServicePayload struct {
 	Status    PaymentStatus
 	UserId    string
 	Message   string
+	JWTToken  string
 }
 
 type CreateTicketServicePayload struct {

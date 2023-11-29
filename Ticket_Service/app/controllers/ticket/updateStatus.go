@@ -34,6 +34,7 @@ func UpdateStatusController(c *fiber.Ctx) error {
 		Status:    payload.Status,
 		UserId:    c.Locals("userInfo").(commonStructs.JWTPayload).UserId,
 		Message:   payload.Message,
+		JWTToken:  c.Locals("token").(string),
 	})
 
 	return utils.CreateResponseBody(c, serviceResponse)
