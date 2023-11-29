@@ -4,28 +4,9 @@ import type { Actions, PageServerLoad } from './$types';
 import type { ClientServiceResponse } from '$lib/types/common';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { updateProfileSchema } from '$lib/dto/profile/updateProfile.dto';
-
-interface HistoryResponseData {
-	id: string,
-	ticketId: string,
-	status: string,
-    paymentUrl: string | null,
-	report: string | null,
-	createdAt: string,
-	seatId: string,
-	price: number,
-	eventName: string,
-	eventTime: string,
-	location: string
-	totalPage: number
-}
+import type { HistoryResponseData } from '$lib/types/booking';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
-	return {
-		code: 200,
-		message: 'yes',
-		data: []
-	}
 	const response = await fetch(`${PUBLIC_CLIENT_SERVICE_BASE_URL}/bookings?user_id=${locals.user?.userId}`, {
 		method: 'GET',
 		headers: {

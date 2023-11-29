@@ -5,3 +5,18 @@ export enum BookingStatus {
 	PURCHASING = "PURCHASING", 
 	FAILED = "FAILED"
 }
+
+export interface HistoryResponseData {
+	id: string,
+	ticketId: string,
+	status: string,
+    paymentUrl: string | null,
+	report: string | null,
+	createdAt: string,
+	seatId: string,
+	price: number,
+	eventName: string,
+	eventTime: string,
+	location: string
+	totalPage: number
+}
