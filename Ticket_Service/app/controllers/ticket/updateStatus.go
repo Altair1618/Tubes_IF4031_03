@@ -1,6 +1,8 @@
 package ticketController
 
 import (
+	"fmt"
+
 	commonStructs "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/common/structs"
 	ticketService "github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/services/ticket"
 	"github.com/Altair1618/Tubes_IF4031_03/Ticket_Service/app/utils"
@@ -19,6 +21,8 @@ func UpdateStatusController(c *fiber.Ctx) error {
 		})
 	}
 
+	fmt.Println(payload)
+
 	validator := utils.CustomValidator{
 		Validator: validator.New(),
 	}
@@ -33,6 +37,7 @@ func UpdateStatusController(c *fiber.Ctx) error {
 		InvoiceId: payload.InvoiceId,
 		Status:    payload.Status,
 		UserId:    c.Locals("userInfo").(commonStructs.JWTPayload).UserId,
+		Message:   payload.Message,
 	})
 
 	return utils.CreateResponseBody(c, serviceResponse)
