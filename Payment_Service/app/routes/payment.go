@@ -10,5 +10,5 @@ func paymentRouteV1(v1 fiber.Router) {
 	payment := v1.Group("/payment")
 
 	payment.Get("/", middlewares.AuthMiddleware, paymentController.GetPaymentController)
-	payment.Patch("/", paymentController.ProcesPaymentController)
+	payment.Patch("/:paymentToken", middlewares.AuthMiddleware, paymentController.ProcesPaymentController)
 }
