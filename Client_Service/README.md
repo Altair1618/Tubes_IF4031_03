@@ -1,5 +1,12 @@
 ## Development
 
+Make sure to create .env file based on .env.example before running the server.
+
+Install dependencies:
+```bash
+bunx install
+```
+
 Make sure to create network used for all containers:
 ```bash
 docker network create tessera_network
