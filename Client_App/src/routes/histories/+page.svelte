@@ -11,7 +11,6 @@
 	import { cn, getDateTimeString } from '$lib/utils';
 	import { invalidateAll } from '$app/navigation';
 	import { enhance as enhance2 } from '$app/forms';
-	import type { HistoryResponseData } from '$lib/types/booking';
 	import type { ComboBoxItem } from '$lib/types/common';
 	import { tick } from 'svelte';
 
@@ -24,25 +23,12 @@
     
 
 	if (histories.length > 0) {
-		for (let i = 1; i <= 3; i++) {
+		for (let i = 1; i <= histories[0].totalPage; i++) {
 			pageItems.push({ label: i.toString(), value: i });
 		}
 	}
 
-	$: selectedPage = pageItems.find((f) => f.value === page)?.label ?? 'Select a framework...';
-
-    //@ts-ignore
-    let movePageForm;
-
-    const getPageData = async (page: number) => {
-        //@ts-ignore
-        if (movePageForm)
-        {
-            movePageForm.submit()
-        }
-    }
-
-    $: getPageData(page)
+	$: selectedPage = pageItems.find((f) => f.value === page)?.label ?? 'Select page...';
 
 	function closeAndFocusTrigger(triggerId: string) {
 		tick().then(() => {
@@ -73,13 +59,12 @@
             <Popover.Content class="w-[200px] p-0">
                 <Command.Root>
                     <Command.Input placeholder="Search page..." />
-                    <Command.Empty>No framework found.</Command.Empty>
+                    <Command.Empty class="text-sm">Page not found.</Command.Empty>
                     <Command.Group>
                         {#each pageItems as pageItem}
                             <form
                                 action="?/movePage"
                                 method="post"
-                                bind:this={movePageForm}
                                 use:enhance2={() => {
                                     return async ({ result }) => {
                                         if (result.type === 'error') {
@@ -92,8 +77,8 @@
                                     };
                                 }}
                             >
-                                <input name="page" hidden type="number" value={page} />
-                                <button type="submit">
+                                <input name="page" hidden type="number" value={pageItem.value} />
+                                <button type="submit" class="w-full">
                                     <Command.Item
                                         class="text-xs"
                                         value={pageItem.value.toString()}
