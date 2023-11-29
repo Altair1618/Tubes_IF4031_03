@@ -12,7 +12,7 @@ import { booking } from "../../models/booking";
 const dequeueBookingService = async ({
 	ticketId,
 }: DequeueBookingServicePayload): Promise<ServiceResponse> => {
-	const query = sql`
+	var query = sql`
         SELECT "id"
         FROM "booking_history"
         WHERE "ticket_id" = ${ticketId}
@@ -62,7 +62,7 @@ const dequeueBookingService = async ({
 	}
 
 	const bookingHistoryId = result.rows[0].id;
-	const query = sql`
+	query = sql`
             UPDATE "booking_history"
             SET "status" = 'WAITING FOR PAYMENT'
             WHERE "id" = ${bookingHistoryId}

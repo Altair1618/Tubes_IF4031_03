@@ -20,7 +20,7 @@ func Bootstrap(app *fiber.App) {
 	}
 
 	db.AutoMigrate(&models.Invoice{})
-	db.Migrator().DropColumn(&models.Invoice{}, "payment_url")
+	// db.Migrator().DropColumn(&models.Invoice{}, "payment_url")
 
 	_ = GetTaskDistributor()
 	redisOpt := asynq.RedisClientOpt{Addr: "payment_service_queue:6379", Password: viper.Get("REDIS_PASSWORD").(string)}
