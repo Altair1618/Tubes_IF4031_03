@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS "booking_history" (
 	"report" varchar,
 	"user_id" varchar(15) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "booking_history_ticket_id_unique" UNIQUE("ticket_id")
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "user_key" (
