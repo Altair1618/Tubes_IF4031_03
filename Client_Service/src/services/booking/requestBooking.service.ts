@@ -8,6 +8,36 @@ const requestBookingService = async ({
     userId,
     jwt,
 }: RequestBookingServicePayload): Promise<ServiceResponse> => {
+    const checkQuery = sql`
+        SELECT "status"
+        FROM "booking_history"
+        WHERE "ticket_id" = ${ticketId}
+        AND "user_id" = ${userId}
+        AND "status" != 'FAILED'
+        LIMIT 1
+    `;
+
+    let checkResult;
+    try {
+        checkResult = await db.execute(checkQuery);
+    } catch (e: any) {
+        console.log(e);
+
+        return {
+            code: 500,
+            message: e.message,
+        }
+    }
+
+    if (checkResult.rows.length > 0) {
+        console.log(checkResult.rows)
+
+        return {
+            code: 400,
+            message: `You have already booked this ticket with status (${checkResult.rows[0]['status']})`,
+        }
+    }
+
     const query = sql`
         INSERT INTO "booking_history" ("ticket_id", "user_id", "status")
         VALUES (${ticketId}, ${userId}, 'WAITING FOR PAYMENT')
