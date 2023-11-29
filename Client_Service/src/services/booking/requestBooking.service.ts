@@ -107,6 +107,31 @@ const requestBookingService = async ({
         }
     }
 
+    if (responseData.data.status === 'BOOKED') {
+        const updateQuery = sql`
+            UPDATE "booking_history"
+            SET "status" = 'IN QUEUE'
+            WHERE "id" = ${bookingId}
+        `;
+
+        try {
+            await db.execute(updateQuery);
+        } catch (e: any) {
+            console.log(e);
+
+            return {
+                code: 500,
+                message: e.message,
+            }
+        }
+
+        return {
+            code: 202,
+            message: responseData.message,
+            data: responseData.data,
+        }
+    }
+
     return {
         code: 200,
         message: "Request Booking Success",
