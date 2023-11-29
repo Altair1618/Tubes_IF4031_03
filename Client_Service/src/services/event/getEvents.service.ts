@@ -9,13 +9,24 @@ const getEventsService = async ({
     if (!query) query = ''
     const url = `${process.env.TICKET_SERVICE_BASE_URL}/api/v1/event?query=${encodeURIComponent(query)}&page=${page}`;
 
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${jwt}`
-        },
-        credentials: 'include'
-    });
+    let response;
+    try {
+        response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            },
+            credentials: 'include'
+        });
+    } catch (error) {
+        console.log(error)
+
+        return {
+            code: 500,
+            message: "Internal Server Error",
+            data: null,
+        }
+    }
     
     const responseData: any = await response.json();
 

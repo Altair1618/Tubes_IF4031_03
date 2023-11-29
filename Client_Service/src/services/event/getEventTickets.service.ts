@@ -17,6 +17,8 @@ const getEventTicketsService = async ({
             credentials: 'include'
         });
     } catch (error) {
+        console.log(error)
+
         return {
             code: 500,
             message: "Internal Server Error",
@@ -37,7 +39,7 @@ const getEventTicketsService = async ({
     return {
         code: 200,
         message: "Successfully Fetch Event Tickets",
-        data: responseData.data
+        data: responseData.data.tickets
     }
 }
 
