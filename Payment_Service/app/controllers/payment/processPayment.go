@@ -36,7 +36,7 @@ func ProcesPaymentController(c *fiber.Ctx) error {
 		PaymentToken: payload.PaymentToken,
 	}
 
-	agent := fiber.Patch("http://ticket_service_payment:3069/api/v1/ticket")
+	agent := fiber.Patch("http://ticket_service:3069/api/v1/ticket")
 	statusCode, _, errs := agent.Bytes()
 
 	if len(errs) > 0 {

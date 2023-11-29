@@ -16,9 +16,10 @@ export const bookingStatus = pgEnum(
 
 export const booking = pgTable("booking_history", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	ticketId: uuid("ticket_id").unique().notNull(),
+	ticketId: uuid("ticket_id").notNull(),
 	status: bookingStatus("status").notNull(),
     report: varchar("report"),
+	paymentUrl: varchar("payment_url"),
     userId: varchar("user_id", {length: 15}).notNull().references(() => user.id),
 	createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
 	updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),

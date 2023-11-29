@@ -7,7 +7,7 @@ import (
 type ResponseBody struct {
 	Code    int ``
 	Message string
-	Data    fiber.Map
+	Data    interface{}
 }
 
 func CreateResponseBody(c *fiber.Ctx, responseBody ResponseBody) error {

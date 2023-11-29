@@ -1,6 +1,10 @@
 package commonStructs
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type TicketStatus string
 
@@ -11,7 +15,7 @@ const (
 )
 
 type UpdateTicketStatusRequest struct {
-	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"reqommuired"`
+	InvoiceId string        `json:"invoiceId" form:"invoiceId" validate:"required"`
 	Status    PaymentStatus `json:"status" form:"status" validate:"required,is_payment_status"`
 }
 
@@ -42,4 +46,12 @@ type UpdateStatusServicePayload struct {
 
 type GetManyTicketsByIdsPayload struct {
 	Ids string `query:"ids"`
+}
+
+type TicketWithEvent struct {
+	Price     int       `json:"price"`
+	EventName string    `json:"eventName"`
+	EventTime time.Time `json:"eventTime"`
+	Location  string    `json:"location"`
+	SeatId    string    `json:"seatId"`
 }

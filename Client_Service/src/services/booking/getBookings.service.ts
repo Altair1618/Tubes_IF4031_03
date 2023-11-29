@@ -44,7 +44,7 @@ const getBookingsService = async ({
 
 	const responseData = await response.json() as TicketServiceResponse<TicketPriceAndEvent>;
 
-	const tiketPricesAndEventNames = responseData.data;
+	const tiketPricesAndEvent = responseData.data;
 	const bookings: BookingDataWithTotalPage[]  = []
 
 	bookingsData.rows.forEach((elmt) => {
@@ -54,6 +54,7 @@ const getBookingsService = async ({
 		const report = elmt['report'] as string | null;
 		const createdAt = elmt['created_at'] as string;
 		const totalPage = elmt['total_page'] as number;
+		const paymentUrl = elmt['payment_url'] as string;
 
 		bookings.push({
 			id,
@@ -62,7 +63,8 @@ const getBookingsService = async ({
 			report,
 			createdAt,
 			totalPage,
-			...(tiketPricesAndEventNames[ticketId] ?? {})
+			paymentUrl,
+			...(tiketPricesAndEvent.tickets[ticketId] ?? {})
 		})
 	})
 
