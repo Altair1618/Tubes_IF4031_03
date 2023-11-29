@@ -18,8 +18,8 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 		FROM events e
 		LEFT JOIN tickets t ON e.id = t.event_id
 		AND t.status = ?
+		WHERE e.id = ?
 		GROUP BY e.id
-		HAVING e.id = ?
 	`, commonStructs.Open, id).Rows()
 
 	if err != nil {
@@ -32,16 +32,29 @@ func GetEventByIdService(id uuid.UUID) utils.ResponseBody {
 		}
 	}
 
+<<<<<<< HEAD
 	defer rows.Close()
 
+=======
+	found := false
+>>>>>>> 507656de24bc2e71343ce987b0329c3663dbfc63
 	event := new(commonStructs.EventDetailResponse)
 	for rows.Next() {
+		found = true
 		rows.Scan(&event.Id, &event.EventName, &event.EventTime, &event.Location, &event.CreatedAt, &event.UpdatedAt, &event.AvailableSeats)
+	}
+
+	if !found {
+		return utils.ResponseBody{
+			Code: fiber.StatusNotFound,
+			Message: "Event Not Found",
+			Data: nil,
+		}
 	}
 
 	return utils.ResponseBody{
 		Code:    200,
 		Message: "Event Data Fetched Successfully",
-		Data:    fiber.Map{"event": event},
+		Data:    fiber.Map{"event": *event},
 	}
 }
