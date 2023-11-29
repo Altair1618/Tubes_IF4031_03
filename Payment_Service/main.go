@@ -10,7 +10,7 @@ import (
 func main() {
 	app := fiber.New()
 
-	configs.Bootstrap()
+	configs.Bootstrap(app)
 	routes.Routes(app)
 	utils.Serve(app)
 }
