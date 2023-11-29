@@ -24,7 +24,7 @@
     
 
 	if (histories.length > 0) {
-		for (let i = 1; i <= 3; i++) {
+		for (let i = 1; i <= histories[0].totalPage; i++) {
 			pageItems.push({ label: i.toString(), value: i });
 		}
 	}
